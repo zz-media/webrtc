@@ -1,0 +1,87 @@
+<html>
+	<head>
+		<title>WebRTC PeerConnection</title>
+		<!-- <link href="./css/des.css" rel="stylesheet" /> -->		
+	</head>
+
+	<body style="width: 1700px;">
+		<div>
+			<div>
+				<button id="connserver">启动</button>
+				<button id="leave" disabled>关闭</button>				
+				socket地址：<input id="socketHost" value=""/>
+				socket房间：<input id="roomId" value="room1"/>
+				强制使用中继服务器:<input type="checkbox" id="useRelay" />chrome://webrtc-internals/
+			</div>
+			<div>
+				<label>发送桌面控制消息</label>
+				<input type="text" id="inputData" value='{"event":"mousemove","x":0.9,"y":0.9}' />
+				<button type="button" id="sendDataBtn" disabled>Send</button>
+			</div>
+			<div >
+				<form id="fileInfo">
+					<label>文件传输</label>
+					<input type="file" id="fileInput" name="files" disabled/>
+					<button type="button" id="sendFile" disabled>Send</button>
+					<button type="button" id="abortButton">Abort</button>	
+					<progress id="sendProgress" max="0" value="0"></progress>	
+					<span id="status"></span>								
+				</form>
+			</div>		
+			<div id="preview" style="width:1600px;">
+				<div>
+					<span>远端画面:</span>
+					<!-- <video id="remote-video" style="max-height:400px;background-color:gainsboro;"  autoplay></video> -->
+					<!-- <video id="remote-video" style="height:840;width:1600;background-color:gainsboro;"  autoplay></video> -->
+					<video id="remotevideo"
+					style="height:540px;width:960px;background-color:gainsboro;object-fit:fill;" autoplay playsinline></video>
+					<h2>Offer SDP:</h2>
+					<textarea id="offer"></textarea>					
+					<h2>Answer SDP:</h2>
+					<textarea id="answer"></textarea>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> -->
+		<script src="./js/libs/adapter-latest.js"></script>
+		<script src="./js/libs/socket.io.js"></script>
+		<script src="./js/libs2/mouseListener.js"></script>
+		<script src="js/remote-des.js"></script>
+		<script>
+			// const video = document.getElementById('remote-video');
+			// video.addEventListener('canplay', function (e) {
+			// 	console.log(e.target.videoWidth);
+			// 	console.log(e.target.videoHeight);
+			// 	const video = document.getElementById('remote-video')
+			// 	 	video.addEventListener('canplay', function (e) {		
+			//  	})
+		
+			 
+			// }) 
+			
+	// ctl+v 时发送文件		
+	function sendFile(file){
+		sendMessage(roomid, {
+			type: 'fileinfo',
+			name: file.name,
+			size: file.size,
+			filetype: file.type,
+			lastmodify: file.lastModified
+	   	});
+		sendFileData(file);
+	}		
+    function eventMsg(data){
+		if(pcDataChannel!=null && pcDataChannel.readyState=='open'){
+			console.log("发送的事件数据",JSON.stringify(data));
+			pcDataChannel.send(JSON.stringify(data));
+		}	
+	}
+	
+	new MouseListener().init("remotevideo",{"sendMsg":eventMsg,"pastefile":sendFile});
+						
+		 </script>			
+	</body>
+</html>

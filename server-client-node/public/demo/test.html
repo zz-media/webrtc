@@ -1,0 +1,45 @@
+<html>
+	<head>
+		<title>WebRTC PeerConnection</title>
+		<link href="./css/main.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<div>
+			<div>
+				<!-- wss://182.61.37.107 -->
+				socket地址(空默认连接页面地址和端口)：<input id="socketHost" value=""/>
+				socket房间：<input id="roomId" value="room1"/>
+				强制使用中继服务器:<input type="checkbox" id="useRelay" />chrome://webrtc-internals/
+			</div>
+			<div>
+				<button id="connserver">开启</button>
+				<!--<button id="start" disabled>Start</button>	
+				<button id="call" disabled>Call</button>	
+				<button id="hangup" disabled>HangUp</button>	
+				-->
+				<button id="leave" disabled>断开</button>	
+			</div>
+			<div id="preview">
+				<div >
+					<h2>Local:</h2>
+					<video id="localvideo" autoplay playsinline muted></video>
+					<h2>Offer SDP:</h2>
+					<textarea id="offer"></textarea>
+				</div>
+				<div>
+					<h2>Remote:</h2>
+					<video id="remotevideo" autoplay playsinline></video>
+					<h2>Answer SDP:</h2>
+					<textarea id="answer"></textarea>
+				</div>
+			</div>
+		</div>
+
+		<!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> -->
+		<script src="./js/libs/adapter-latest.js"></script>
+		<script src="./js/libs/socket.io.js"></script>
+		<script src="js/test.js"></script>
+	</body>
+</html>

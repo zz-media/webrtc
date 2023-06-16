@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title>WebRTC PeerConnection</title>
+		<!-- <link href="./css/main.css" rel="stylesheet" /> -->
+	</head>
+
+	<body>
+		<div>
+			<a href="config.html">配置</a>
+		</div>	
+		<div id="webAddress">web访问地址： xx</div>	
+		<div id="socketInfo"></div>
+		socket房间：<input id="roomId" value="room1" />		
+		<div>
+			<div>
+				强制使用中继服务器<input type="checkbox" id="useRelay" />
+			</div>			
+			<div>
+				<button id="connserver">启动</button>
+				<button id="leave" disabled>关闭</button>	
+				<button id="callBtn">call</button>
+
+				<label>接收桌面控制消息</label>
+				<input type="text" disabled id="showData" value="" />
+				
+				<label>BandWidth(kps):</label>
+					<select id="bandwidth" ><!-- disabled -->
+					<option value="unlimited" selected>unlimited</option>
+					<option value="2000">2000</option>
+					<option value="1000">1000</option>
+					<option value="500">500</option>
+					<option value="250">250</option>
+					<option value="125">125</option>
+				</select>							
+			</div>	
+			<div class="progress">
+				<span class="label">文件接收进度: </span>
+				<progress id="receiveProgress" max="0" value="0"></progress>
+				<a id="download"></a>
+			</div>		
+			<div id="preview">
+				<div >
+					<h2><input type="checkbox" id="videoShowLocal" />本地画面:</h2>
+					<div id="screensize"></div>
+					<video id="localvideo" autoplay playsinline muted></video>
+					<h2>Offer SDP:</h2>
+					<textarea id="offer"></textarea>
+					<h2>Answer SDP:</h2>
+					<textarea id="answer"></textarea>					
+				</div>
+			</div>
+		</div>
+
+		<!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> -->
+		<script src="./js/libs/adapter-latest.js"></script>
+		<script src="./js/libs/socket.io.js"></script>
+		<script src="js/remote-src.js"></script>
+	</body>
+</html>
