@@ -1,0 +1,27 @@
+spring:
+  profiles: 
+    active: dev
+  application:
+    name: remote-server
+server:
+  port: 18080
+  servlet:
+    context-path: /remote-server
+  tomcat:
+    threads:
+      max: 600 # 默认200
+      min-spare: 9 # 默认10。最小空闲线程数
+    accept-count: 2000 # 最大等待数，默认100。超过的话，请求会被拒绝
+    max-connections: 10000 # 默认8192
+    connection-timeout: 300000
+socketio:
+  allowCustomRequests: true
+  bossCount: 1
+  host: 127.0.0.1
+  maxFramePayloadLength: 1048576
+  maxHttpContentLength: 1048576
+  pingInterval: 25000
+  pingTimeout: 6000000
+  port: 19000
+  upgradeTimeout: 1000000
+  workCount: 100

@@ -1,0 +1,4 @@
+app:  
+  turn:
+    secret: zz@Coturn
+    iceServers: "[{'urls':['turn:172.26.180.229:3478'],'username':'$username','credential':'$credential'}]"

@@ -1,0 +1,30 @@
+<configuration>
+    <contextName>remote-desktop-server</contextName>
+ 
+    <appender name="SYSTEM_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/remote-desktop-server.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./logs/remote-desktop-server-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <maxHistory>180</maxHistory>
+            <maxFileSize>300MB</maxFileSize>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger- %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    
+    <appender name="SYSTEM_STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger- %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <root level="info">
+        <appender-ref ref="SYSTEM_STDOUT"/>
+        <appender-ref ref="SYSTEM_FILE"/>
+    </root>
+ 
+</configuration>

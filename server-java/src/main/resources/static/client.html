@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>WebRTC PeerConnection</title>
+		<!-- <link href="./css/des.css" rel="stylesheet" /> -->
+		<meta charset="UTF-8">
+	</head>
+
+	<body style="width: 1700px;">
+		<div>
+			<div>
+				socket地址：<input id="host" value="http://127.0.0.1:9000"/>
+				<button id="connserver">启动</button>
+				<button id="leave" disabled>关闭</button>	
+
+				<label>发送桌面控制消息</label>
+				<input type="text" id="inputData" value='{"event":"mousemove","x":834,"y":653}' />
+				<button id="sendBtn">Send</button>
+			</div>
+			<div id="preview" style="width:1600px;">
+				<div>
+					<span>远端画面:</span>
+					<!-- <video id="remote-video" style="max-height:400px;background-color:gainsboro;"  autoplay></video> -->
+					<!-- <video id="remote-video" style="height:840;width:1600;background-color:gainsboro;"  autoplay></video> -->
+					<video id="remotevideo"
+					style="height:600px;width:1600px;background-color:gainsboro;" autoplay playsinline></video>
+					<h2>Offer SDP:</h2>
+					<textarea id="offer"></textarea>					
+					<h2>Answer SDP:</h2>
+					<textarea id="answer"></textarea>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script> -->
+		<script src="./js/libs/adapter-latest.js"></script>
+		<script src="./js/libs/socket.io.js"></script>
+		<script src="./js/libs2/mouseListener.js"></script>
+		<script src="js/des-media-data-robot.js"></script>
+		<script>
+			// const video = document.getElementById('remote-video');
+			// video.addEventListener('canplay', function (e) {
+			// 	console.log(e.target.videoWidth);
+			// 	console.log(e.target.videoHeight);
+			// 	const video = document.getElementById('remote-video')
+			// 	 	video.addEventListener('canplay', function (e) {		
+			//  	})
+		
+			 
+			// })   			
+			//new MouseListener().init("remotevideo",{remoteScreen:[1920,1080]});
+			new MouseListener().init("remotevideo",{remoteScreen:[1600,900]});
+			//重写
+			MouseListener.prototype.postEvent=function(data){ 
+   				console.log("获取的事件数据zzz",JSON.stringify(data));
+				pcSendChannel.send(JSON.stringify(data));
+			}					
+		 </script>			
+	</body>
+</html>
