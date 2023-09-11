@@ -44,6 +44,7 @@ import org.webrtc.VideoSink;
 import org.webrtc.VideoSource;
 import org.webrtc.VideoTrack;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -67,6 +68,7 @@ public class CallActivity extends AppCompatActivity {
 
     //用于数据传输
     private PeerConnection mPeerConnection;
+    private DataChannel mDataChannel;
     private PeerConnectionFactory mPeerConnectionFactory;
 
     //OpenGL ES
@@ -309,6 +311,10 @@ public class CallActivity extends AppCompatActivity {
         connection.addTrack(mVideoTrack, mediaStreamLabels);
         connection.addTrack(mAudioTrack, mediaStreamLabels);
 
+        DataChannel.Init init = new DataChannel.Init();
+        mDataChannel = connection.createDataChannel("sendDataChannel", init);
+        mDataChannel.registerObserver(mDataChannelObserver);
+
         return connection;
     }
 
@@ -374,6 +380,37 @@ public class CallActivity extends AppCompatActivity {
         }
         return null;
     }
+
+    //{"event":"click","x":"0.99687","y":"0.97963"}
+    private DataChannel.Observer mDataChannelObserver = new DataChannel.Observer() {
+        @Override
+        public void onMessage(final DataChannel.Buffer buffer) {
+
+            ByteBuffer data = buffer.data;
+            byte[] bytes = new byte[data.remaining()];
+            data.get(bytes);
+            final String command = new String(bytes);
+            Log.i(TAG, "onMessage:"+command);
+            try {
+                JSONObject jsonObject  = new JSONObject(command);
+                if("click".equals(jsonObject.getString("event"))){
+                    logcatOnUI("点击事件"+command);
+                }
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void onBufferedAmountChange(long l) {
+            Log.d(TAG, "onBufferedAmountChange");
+        }
+
+        @Override
+        public void onStateChange() {
+            Log.d(TAG, "DataChannel: onStateChange: " + mDataChannel.state());
+        }
+    };
 
     private PeerConnection.Observer mPeerConnectionObserver = new PeerConnection.Observer() {
         @Override
