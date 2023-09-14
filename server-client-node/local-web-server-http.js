@@ -36,7 +36,7 @@ function initServer(){
 			socket.join(room);
 			var myRoom = io.sockets.adapter.rooms[room]; 
 			var users = (myRoom)? Object.keys(myRoom.sockets).length : 0;
-			console.log('the user number of room(http) is: ' + users);
+			console.log('the user number of '+room+'(http) is: ' + users);
 	
 			if(users < USERCOUNT){
 				socket.emit('joined', room, socket.id); //发给除自己之外的房间内的所有人
@@ -56,7 +56,7 @@ function initServer(){
 		socket.on('leave', (room)=>{
 			var myRoom = io.sockets.adapter.rooms[room]; 
 			var users = (myRoom)? Object.keys(myRoom.sockets).length : 0;
-			console.log('the user number of room is: ' + (users-1));
+			console.log('the user number of '+room+'(http) is: ' + (users-1));
 			//socket.emit('leaved', room, socket.id);
 			//socket.broadcast.emit('leaved', room, socket.id);
 			socket.to(room).emit('bye', room, socket.id);

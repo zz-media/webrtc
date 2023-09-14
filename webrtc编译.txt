@@ -1,0 +1,66 @@
+综合参考（每篇文章都不是很完整）：
+https://blog.csdn.net/icsecurity/article/details/109226458
+https://blog.csdn.net/a3029537/article/details/124021553
+https://webrtc.github.io/webrtc-org/native-code/development/
+
+以管理员运行cmd，需要使用vpn和设置代理，代理端口可以通过ie查看
+git config --global http.proxy 127.0.0.1:10809
+git config --global https.proxy 127.0.0.1:10809
+netsh winhttp set proxy 127.0.0.1:10809
+set HTTP_PROXY=127.0.0.1:10809
+set HTTPS_PROXY=127.0.0.1:10809
+----------
+取消代理
+netsh winhttp reset proxy
+----------
+
+1. Visual Studio安装（最好安装在默认的C盘路径）
+选择最新的vs2022，用的是社区版，安装时选择自定义安装
+a）勾选使用C++的桌面开发
+b)  Windows 10 SDK安装10.0.20348.0 取消10.0.1904.0 
+c）勾选MFC及ATL这两项（MSVS）
+d) 安装完VS2022后，必须安装sdk调试工具。打开控制面板->程序与功能，找到Windows Software Development Kit, 点更改勾选Debugging Tools For Windows
+
+2. 安装depot_tools
+从https://storage.googleapis.com/chrome-infra/depot_tools.zip下载depot_tools安装后，解压到电脑任一位置，并把depot_tools目录的路径加到系统环境变量Path里
+
+3. 获取WebRtc源码
+a) 需要代理
+b)打开cmd窗口，输入gclient安装必须工具
+c)设置环境临时变量如
+set vs2022_install=C:\Program Files\Microsoft Visual Studio\2022\Community
+set GYP_MSVS_OVERRIDE_PATH=C:\Program Files\Microsoft Visual Studio\2022\Community
+set GYP_GENERATORS=msvs-ninja,ninja
+set WINDOWSSDKDIR=C:\Program Files (x86)\Windows Kits\10
+set DEPOT_TOOLS_WIN_TOOLCHAIN=0
+set GYP_MSVS_VERSION=2022
+d) 创建webrtc源码存放目录,并获取webrtc（编译完大概占用23g的电脑空间）
+mkdir c:\webrtc-checkout
+cd c:\webrtc-checkout
+下载源码
+fetch --nohooks webrtc
+最好切换并同步分支（git checkout master ，git pull origin master）
+gclient sync
+（git checkout my-branch ，git merge master）
+3.编译工程
+cd c:\webrtc-checkout\src
+生成Ninja 项目文件：（Release 构建生成 is_debug=false）
+gn gen out/Default （gn gen out/Default --ide=vs2022 --sln=webrtc --args="use_lld=false is_debug=false"）
+编译项目文件
+ninja -C out/Default
+--------------------------
+gn clean out/Default
+------------
+编译遇到的问题：
+
+a)环境变量含中文导致写环境变量失败
+
+UnicodeEncodeError: 'gbk' codec can't encode character '\u04e2' in position 3840: illegal multibyte sequence
+
+修改src\build\toolchain\win\setup_toolchain.py
+
+    f.write(env_block.encode('utf-8').decode('GBK'))
+
+b) lld-link: [0;31merror: [0mprocedure symbol record for `operator new` 
+
+   添加参数use_lld=false 
