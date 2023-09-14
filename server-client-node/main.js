@@ -35,7 +35,7 @@ function createWindow () {
   mainWindow.webContents.openDevTools();
   //mainWindow.webContents.openDevTools({mode: 'bottom'});  
 
-  mainWindow.loadFile('local/multi-remote-src.html');//remote-src.html
+  mainWindow.loadFile('local/remote-src.html');//remote-src.html
   //mainWindow.loadURL('https://127.0.0.1/peer/src.html');
 
 //   let view=new BrowserView();

@@ -1,19 +1,19 @@
 
 let ffi = require("ffi-napi");
 var desktop4Node = null;
-// var desktop4Node = ffi.Library('../../dll/Desktop4Node.dll', {
-// 	'add': [ 'int', [ 'int', 'int' ] ],
-// 	'mouseMove': [ 'int', [ 'int', 'int' ] ],
-// 	'leftClick': [ 'int', [ ] ],
-// 	'rightClick': [ 'int', [ ] ],
-// 	'dbClick': [ 'int', [ ] ],
-// 	'leftDown': [ 'int',[] ],
-// 	'dragMove': [ 'int', ['float','float' ] ],
-// 	'leftUp': [ 'int',[] ],
-// 	'mouseWheel': [ 'void', ['int'] ],
-// 	'keybord': [ 'void', ['int'] ],
+var desktop4Node = ffi.Library('../../dll/Desktop4Node.dll', {
+	'add': [ 'int', [ 'int', 'int' ] ],
+	'mouseMove': [ 'int', [ 'int', 'int' ] ],
+	'leftClick': [ 'int', [ ] ],
+	'rightClick': [ 'int', [ ] ],
+	'dbClick': [ 'int', [ ] ],
+	'leftDown': [ 'int',[] ],
+	'dragMove': [ 'int', ['float','float' ] ],
+	'leftUp': [ 'int',[] ],
+	'mouseWheel': [ 'void', ['int'] ],
+	'keybord': [ 'void', ['int'] ],
 
-// });
+});
 const { desktopCapturer } = require('electron')
 var robot = require("@jitsi/robotjs");
 //var config = require('../config/config.json');
@@ -86,7 +86,7 @@ function sendMessageRobot(roomid, data){
 		switch (obj.event){
 			
 		case 'mousemove':
-			break;//暂时不需要
+			//break;//暂时不需要
 			if(videoWidth>0 && videoHeight>0 && obj.x<1 && obj.y<1){//传坐标比例
 				msgX=obj.x * videoWidth;
 				msgY=obj.y * videoHeight;
@@ -181,7 +181,8 @@ function conn(){
 
 	console.log("startLocalWebServer="+config.startLocalWebServer);
 	if(config.startLocalWebServer){
-		var socketUrl = "wss://"+config.httpsServerAddress+":"+config.httpsServerPort;
+		//var socketUrl = "wss://"+config.httpsServerAddress+":"+config.httpsServerPort;
+		var socketUrl = "ws://"+config.httpsServerAddress;
 		var webUrl = "https://"+config.httpsServerAddress+":"+config.httpsServerPort+"/peer/remote-des.html?wss="+socketUrl;
 		document.querySelector('#socketInfo').innerHTML = "socket地址："+socketUrl;
 		document.querySelector('#webAddress').innerHTML = "web访问地址："+webUrl+" -- "+"http://localhost/peer/remote-des.html?wss=ws://localhost:80";
