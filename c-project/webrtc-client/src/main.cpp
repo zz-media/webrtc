@@ -56,6 +56,9 @@ int main(int argc, const char* args[])
     rtc::Win32Thread w32_thread(&w32_ss);
     rtc::ThreadManager::Instance()->SetCurrentThread(&w32_thread);
 
+    Conductor conductor;
+    conductor.InitializePeerConnection();
+
     string roomId = "room1";
 
     socket::ptr current_socket;
@@ -113,8 +116,6 @@ int main(int argc, const char* args[])
 
     }));
 
-    Conductor conductor;
-    conductor.InitializePeerConnection();
 
     current_socket->emit("join", roomId);
 
