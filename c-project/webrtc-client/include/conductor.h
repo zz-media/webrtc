@@ -12,6 +12,7 @@ public:
     ~Conductor();
     bool InitializePeerConnection();
     bool CreatePeerConnection(bool dtls);
+    void AddTracks();
 
     // PeerConnectionObserver implementation.
     void OnSignalingChange(

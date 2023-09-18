@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "conductor.h"
+#include "MyCapturer.h"
 
 #include "api/create_peerconnection_factory.h"
 #include "api/audio_codecs/audio_decoder_factory.h"
@@ -46,7 +47,9 @@ bool Conductor::InitializePeerConnection() {
     }
 
 
-	return false;
+    AddTracks();
+
+    return peer_connection_ != nullptr;
 }
 bool Conductor::CreatePeerConnection(bool dtls) {
 
@@ -69,6 +72,44 @@ bool Conductor::CreatePeerConnection(bool dtls) {
 
     peer_connection_ = peer_connection_factory_->CreatePeerConnection(config, nullptr, nullptr, this);
     return peer_connection_ != nullptr;
+}
+void Conductor::AddTracks() {  //音视频操控
+    if (!peer_connection_->GetSenders().empty()) {
+        std::cout << "AddTracks:Already added tracks" << std::endl;
+        return;  // Already added tracks.
+    }
+    const char kAudioLabel[] = "audio_label";
+    const char kVideoLabel[] = "video_label";
+    const char kStreamId[] = "stream_id";
+
+    rtc::scoped_refptr<webrtc::AudioTrackInterface> audio_track(
+        peer_connection_factory_->CreateAudioTrack(
+            kAudioLabel, peer_connection_factory_->CreateAudioSource(
+                cricket::AudioOptions())));
+    auto result_or_error = peer_connection_->AddTrack(audio_track, { kStreamId });
+    if (!result_or_error.ok()) {
+        RTC_LOG(LS_ERROR) << "Failed to add audio track to PeerConnection: "
+            << result_or_error.error().message();
+    }
+
+    //audio_track->set_enabled(false);
+    //rtc::scoped_refptr<CapturerTrackSource> video_device = CapturerTrackSource::Create();
+    rtc::scoped_refptr<MyCapturer> video_device = new rtc::RefCountedObject<MyCapturer>();
+    if (video_device) {
+        video_device->startCapturer();
+        rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
+            peer_connection_factory_->CreateVideoTrack(kVideoLabel, video_device));
+        //main_wnd_->StartLocalRenderer(video_track_);
+        result_or_error = peer_connection_->AddTrack(video_track_, { kStreamId });//video_track_->set_enabled(false);//开关视频
+        if (!result_or_error.ok()) {
+            RTC_LOG(LS_ERROR) << "Failed to add video track to PeerConnection: " << result_or_error.error().message();
+        }
+    }
+    else {
+        RTC_LOG(LS_ERROR) << "OpenVideoCaptureDevice failed";
+    }
+
+    //main_wnd_->SwitchToStreamingUI();
 }
 
 // PeerConnectionObserver implementation.

@@ -28,7 +28,7 @@ aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src SRC_LIST)
 link_directories("E:/clib/webrtc/lib64")
 add_executable (webrtc-client ${SRC_LIST})
 # winmm LNK2019	无法解析的外部符号 __imp_timeGetTime，函数 "__int64 __cdecl rtc::SystemTimeNanos(void)" (?SystemTimeNanos@rtc@@YA_JXZ) 中引用了该符号
-target_link_libraries(webrtc-client webrtc ws2_32 winmm secur32 iphlpapi crypt32 dmoguids wmcodecdspuuid wmcodecdspuuid amstrmid msdmo)
+target_link_libraries(webrtc-client webrtc ws2_32 winmm secur32 iphlpapi crypt32 dmoguids wmcodecdspuuid wmcodecdspuuid amstrmid msdmo d3d11 dxgi)
 
 #cmake 检测到“RuntimeLibrary”的不匹配项: 值“MT_StaticRelease”不匹配值“MD_DynamicRelease”
 #https://blog.csdn.net/10km/article/details/51735432
