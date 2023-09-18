@@ -36,4 +36,6 @@ ENDIF (CMAKE_SYSTEM_NAME MATCHES "Linux")
 #set(VAR_MAIN "VAR_MAIN_TEST")
 # 包含子项目。
 #add_subdirectory ("desktop_ctrl")
-add_subdirectory ("socketio-client")
+#add_subdirectory ("socketio-client")
+#add_subdirectory ("socketio-client-r")
+add_subdirectory ("webrtc-client")
