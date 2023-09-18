@@ -10,7 +10,7 @@
 #include <rtc_base/win32_socket_init.h>
 #include <rtc_base/win32_socket_server.h>
 
-//#include "conductor.h"
+#include "conductor.h"
 
 
 using namespace sio;
@@ -113,7 +113,8 @@ int main(int argc, const char* args[])
 
     }));
 
-    //Conductor conductor;
+    Conductor conductor;
+    conductor.InitializePeerConnection();
 
     current_socket->emit("join", roomId);
 
