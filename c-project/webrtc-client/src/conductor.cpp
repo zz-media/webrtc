@@ -17,16 +17,16 @@
 #include "rtc_base/strings/json.h"
 
 
-class DummySetSessionDescriptionObserver
-    : public webrtc::SetSessionDescriptionObserver {
+class DummySetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver {
 public:
     static DummySetSessionDescriptionObserver* Create() {
         return new rtc::RefCountedObject<DummySetSessionDescriptionObserver>();
     }
-    virtual void OnSuccess() { RTC_LOG(INFO) << __FUNCTION__; }
+    virtual void OnSuccess() { 
+        RTC_LOG(INFO) << __FUNCTION__; 
+    }
     virtual void OnFailure(webrtc::RTCError error) {
-        RTC_LOG(INFO) << __FUNCTION__ << " " << ToString(error.type()) << ": "
-            << error.message();
+        RTC_LOG(INFO) << __FUNCTION__ << " " << ToString(error.type()) << ": " << error.message();
     }
 };
 
