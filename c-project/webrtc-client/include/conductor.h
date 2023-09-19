@@ -2,7 +2,7 @@
 
 #include "api/peer_connection_interface.h"
 #include "sio_socket.h"
-
+//DataChannelObserver https://blog.csdn.net/doitsjz/article/details/51926583
 class Conductor : public webrtc::PeerConnectionObserver, public webrtc::CreateSessionDescriptionObserver {
 
 public:
