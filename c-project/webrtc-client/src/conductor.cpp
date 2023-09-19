@@ -2,6 +2,7 @@
 
 #include "conductor.h"
 #include "MyCapturer.h"
+#include "MyScreenCapture.h"
 
 #include "api/create_peerconnection_factory.h"
 #include "api/audio_codecs/audio_decoder_factory.h"
@@ -114,7 +115,7 @@ void Conductor::AddTracks() {  //音视频操控
 
     //audio_track->set_enabled(false);
     //rtc::scoped_refptr<CapturerTrackSource> video_device = CapturerTrackSource::Create();
-    rtc::scoped_refptr<MyCapturer> video_device = new rtc::RefCountedObject<MyCapturer>();
+    rtc::scoped_refptr<MyScreenCapture> video_device = new rtc::RefCountedObject<MyScreenCapture>();
     if (video_device) {
         video_device->startCapturer();
         rtc::scoped_refptr<webrtc::VideoTrackInterface> video_track_(
@@ -132,14 +133,14 @@ void Conductor::AddTracks() {  //音视频操控
     //main_wnd_->SwitchToStreamingUI();
 }
 
-//void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket) {
-//    //RTC_LOG(INFO) << "initSocketio";
-//    std::cout << "initSocketio" << std::endl;
-//    current_socket_ = current_socket;
-//
-//    //sio::string roomId = "room1";
-//    //current_socket_->emit("join", roomId);
-//}
+void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket) {
+    //RTC_LOG(INFO) << "initSocketio";
+    std::cout << "initSocketio" << std::endl;
+    current_socket_ = current_socket;
+
+    //sio::string roomId = "room1";
+    //current_socket_->emit("join", roomId);
+}
 
 void Conductor::createOffer() {
     std::cout << "void Conductor::createOffer" << std::endl;
@@ -149,13 +150,32 @@ void Conductor::createOffer() {
 
 void Conductor::getAnswer(const std::string& sdp) {
 
-    //std::unique_ptr<webrtc::SessionDescriptionInterface> session_description = webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp);
-    //peer_connection_->SetRemoteDescription(DummySetSessionDescriptionObserver::Create(), session_description.release());
+    std::unique_ptr<webrtc::SessionDescriptionInterface> session_description = webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp);
+    peer_connection_->SetRemoteDescription(DummySetSessionDescriptionObserver::Create(), session_description.release());
     std::cout << "set answer sdp" << std::endl;
 
     //sio::message::list messageList;
     //messageList.push(sio::string_message::create("room1"));
     //messageList.push(sio::string_message::create("{\"message\":\"hello world message ananan x\"}"));
+    //current_socket_->emit("message", messageList);
+}
+
+void Conductor::getCandidate(const std::string& sdp, int sdp_mline_index, const std::string& sdp_mid) {
+    webrtc::SdpParseError error;
+    std::unique_ptr<webrtc::IceCandidateInterface> candidate(webrtc::CreateIceCandidate(sdp_mid, sdp_mline_index, sdp, &error));
+    if (!candidate.get()) {
+        RTC_LOG(WARNING) << "Can't parse received candidate message. " << "SdpParseError was: " << error.description;
+        return;
+    }
+    if (!peer_connection_->AddIceCandidate(candidate.get())) {
+        RTC_LOG(WARNING) << "Failed to apply the received candidate";
+        return;
+    }
+    RTC_LOG(INFO) << " Received candidate :";
+
+    //sio::message::list messageList;
+    //messageList.push(sio::string_message::create("room1"));
+    //messageList.push(sio::string_message::create("{\"message\":\"hello world message cacaca x\"}"));
     //current_socket_->emit("message", messageList);
 }
 
@@ -194,11 +214,30 @@ void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     //messageList.push(sio::string_message::create(dataStr));
     //current_socket_->emit("message", messageList);
 
+    sio::message::list messageList;
+    messageList.push(sio::string_message::create("room1"));
+    // 创建一个空的 JSON 文档
+    rapidjson::Document jsonDoc;
+    rapidjson::Document::AllocatorType& allocator = jsonDoc.GetAllocator();
+    // 添加数据到 JSON 文档
+    jsonDoc.SetObject();
+    jsonDoc.AddMember("type", "candidate", allocator);
+    jsonDoc.AddMember("label", sdp_mline_index, allocator);
+    jsonDoc.AddMember("candidate", rapidjson::StringRef(sdp.c_str(), sdp.length()), allocator);
+    jsonDoc.AddMember("sdp_mid", rapidjson::StringRef(sdp_mid.c_str(), sdp_mid.length()), allocator);
 
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    jsonDoc.Accept(writer);
+    std::string jsonString = buffer.GetString();
+    std::cout << "candidate JSON: " << jsonString << std::endl;
+    messageList.push(sio::string_message::create(jsonString));
+    current_socket_->emit("message", messageList);
 }
 
 // PeerConnectionClientObserver implementation.
 
+//offer OnSuccess
 void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     std::cout << "offer OnSuccess" << std::endl;
     peer_connection_->SetLocalDescription(DummySetSessionDescriptionObserver::Create(), desc);
@@ -224,7 +263,9 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
     jsonDoc.Accept(writer);
     std::string jsonString = buffer.GetString();
-    std::cout << "Generated JSON: " << jsonString << std::endl;
+    //std::cout << "Generated JSON: " << jsonString << std::endl;
+    messageList.push(sio::string_message::create(jsonString));
+    current_socket_->emit("message", messageList);
 
     //Json::StyledWriter writer;
     //Json::Value data;

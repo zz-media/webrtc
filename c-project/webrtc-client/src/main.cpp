@@ -113,13 +113,25 @@ int main(int argc, const char* args[])
             std::cout << "need_offer match" << type << std::endl;
             conductor->createOffer();
         }
+        else if (type == "answer") {
+            std::cout << "get answer" << type << std::endl;
+            std::string sdp = data->get_map()["sdp"]->get_string();
+            std::cout << sdp << std::endl;
+            conductor->getAnswer(sdp);
 
+        }
+        else if (type == "candidate") {
+            std::string sdp = data->get_map()["candidate"]->get_string();
+            int sdp_mline_index = data->get_map()["label"]->get_int();
+            std::string sdp_mid = data->get_map()["id"]->get_string();
+            conductor->getCandidate(sdp, sdp_mline_index, sdp_mid);
+        }
         _lock.unlock();
 
     }));
 
 
-    //conductor->initSocketio(current_socket);
+    conductor->initSocketio(current_socket);
     current_socket->emit("join", roomId);
     // Main loop.
     MSG msg;

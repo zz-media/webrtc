@@ -1,6 +1,7 @@
 #pragma once
 
 #include "api/peer_connection_interface.h"
+#include "sio_socket.h"
 
 class Conductor : public webrtc::PeerConnectionObserver, public webrtc::CreateSessionDescriptionObserver {
 
@@ -14,9 +15,10 @@ public:
     bool CreatePeerConnection(bool dtls);
     void AddTracks();
 
-    //void initSocketio(std::shared_ptr<sio::socket> current_socket);
+    void initSocketio(std::shared_ptr<sio::socket> current_socket);
     void createOffer();
     void getAnswer(const std::string& sdp);
+    void getCandidate(const std::string& sdp, int sdp_mline_index, const std::string& sdp_mid);
 
     // PeerConnectionObserver implementation.
     void OnSignalingChange(
@@ -42,7 +44,7 @@ public:
     void OnFailure(webrtc::RTCError error) override;
 
 protected:
-    //std::shared_ptr<sio::socket> current_socket_;
+    std::shared_ptr<sio::socket> current_socket_;
     rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_factory_;
     rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection_;
 
