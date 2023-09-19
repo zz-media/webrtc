@@ -16,6 +16,10 @@
 #include "sio_socket.h"
 #include "rtc_base/strings/json.h"
 
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
+
 
 class DummySetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver {
 public:
@@ -206,8 +210,22 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     std::cout << webrtc::SdpTypeToString(desc->GetType()) << std::endl;
     std::cout << "----------------------------" << std::endl;
 
-    //sio::message::list messageList;
-    //messageList.push(sio::string_message::create("room1"));
+    sio::message::list messageList;
+    messageList.push(sio::string_message::create("room1"));
+
+    // 创建一个空的 JSON 文档
+    rapidjson::Document jsonDoc;
+    rapidjson::Document::AllocatorType& allocator = jsonDoc.GetAllocator();
+    // 添加数据到 JSON 文档
+    jsonDoc.SetObject();
+    jsonDoc.AddMember("type", rapidjson::StringRef(webrtc::SdpTypeToString(desc->GetType())), allocator);
+    jsonDoc.AddMember("sdp", rapidjson::StringRef(sdp.c_str(), sdp.length()), allocator);
+    rapidjson::StringBuffer buffer;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+    jsonDoc.Accept(writer);
+    std::string jsonString = buffer.GetString();
+    std::cout << "Generated JSON: " << jsonString << std::endl;
+
     //Json::StyledWriter writer;
     //Json::Value data;
     //data["type"] = webrtc::SdpTypeToString(desc->GetType());
