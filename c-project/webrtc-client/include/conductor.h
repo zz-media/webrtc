@@ -2,7 +2,7 @@
 
 #include "api/peer_connection_interface.h"
 
-class Conductor : public webrtc::PeerConnectionObserver {
+class Conductor : public webrtc::PeerConnectionObserver, public webrtc::CreateSessionDescriptionObserver {
 
 public:
 
@@ -13,6 +13,10 @@ public:
     bool InitializePeerConnection();
     bool CreatePeerConnection(bool dtls);
     void AddTracks();
+
+    //void initSocketio(std::shared_ptr<sio::socket> current_socket);
+    void createOffer();
+    void getAnswer(const std::string& sdp);
 
     // PeerConnectionObserver implementation.
     void OnSignalingChange(
@@ -33,7 +37,12 @@ public:
     void OnIceCandidate(const webrtc::IceCandidateInterface* candidate) override;
     void OnIceConnectionReceivingChange(bool receiving) override {}
 
+    // CreateSessionDescriptionObserver implementation.
+    void OnSuccess(webrtc::SessionDescriptionInterface* desc) override;
+    void OnFailure(webrtc::RTCError error) override;
+
 protected:
+    //std::shared_ptr<sio::socket> current_socket_;
     rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_factory_;
     rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection_;
 

@@ -13,6 +13,22 @@
 #include "api/video_codecs/video_decoder_factory.h"
 #include "api/video_codecs/video_encoder_factory.h"
 
+#include "sio_socket.h"
+#include "rtc_base/strings/json.h"
+
+
+class DummySetSessionDescriptionObserver
+    : public webrtc::SetSessionDescriptionObserver {
+public:
+    static DummySetSessionDescriptionObserver* Create() {
+        return new rtc::RefCountedObject<DummySetSessionDescriptionObserver>();
+    }
+    virtual void OnSuccess() { RTC_LOG(INFO) << __FUNCTION__; }
+    virtual void OnFailure(webrtc::RTCError error) {
+        RTC_LOG(INFO) << __FUNCTION__ << " " << ToString(error.type()) << ": "
+            << error.message();
+    }
+};
 
 Conductor::Conductor(){
 
@@ -112,6 +128,33 @@ void Conductor::AddTracks() {  //ÒôÊÓÆµ²Ù¿Ø
     //main_wnd_->SwitchToStreamingUI();
 }
 
+//void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket) {
+//    //RTC_LOG(INFO) << "initSocketio";
+//    std::cout << "initSocketio" << std::endl;
+//    current_socket_ = current_socket;
+//
+//    //sio::string roomId = "room1";
+//    //current_socket_->emit("join", roomId);
+//}
+
+void Conductor::createOffer() {
+    std::cout << "void Conductor::createOffer" << std::endl;
+    peer_connection_->CreateOffer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+    std::cout << "void Conductor::createOffer success" << std::endl;
+}
+
+void Conductor::getAnswer(const std::string& sdp) {
+
+    //std::unique_ptr<webrtc::SessionDescriptionInterface> session_description = webrtc::CreateSessionDescription(webrtc::SdpType::kAnswer, sdp);
+    //peer_connection_->SetRemoteDescription(DummySetSessionDescriptionObserver::Create(), session_description.release());
+    std::cout << "set answer sdp" << std::endl;
+
+    //sio::message::list messageList;
+    //messageList.push(sio::string_message::create("room1"));
+    //messageList.push(sio::string_message::create("{\"message\":\"hello world message ananan x\"}"));
+    //current_socket_->emit("message", messageList);
+}
+
 // PeerConnectionObserver implementation.
 void Conductor::OnAddTrack(
     rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,
@@ -148,4 +191,32 @@ void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     //current_socket_->emit("message", messageList);
 
 
+}
+
+// PeerConnectionClientObserver implementation.
+
+void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
+    std::cout << "offer OnSuccess" << std::endl;
+    peer_connection_->SetLocalDescription(DummySetSessionDescriptionObserver::Create(), desc);
+    std::string sdp;
+    desc->ToString(&sdp);
+    std::cout << "sdp:----------------------------" << std::endl;
+    std::cout << sdp << std::endl;
+    std::cout << "webrtc::SdpTypeToString(desc->GetType()):----------------------------" << std::endl;
+    std::cout << webrtc::SdpTypeToString(desc->GetType()) << std::endl;
+    std::cout << "----------------------------" << std::endl;
+
+    //sio::message::list messageList;
+    //messageList.push(sio::string_message::create("room1"));
+    //Json::StyledWriter writer;
+    //Json::Value data;
+    //data["type"] = webrtc::SdpTypeToString(desc->GetType());
+    //data["sdp"] = sdp;
+    //std::string dataStr = writer.write(data);
+    //messageList.push(sio::string_message::create(dataStr));
+    //current_socket_->emit("message", messageList);
+}
+
+void Conductor::OnFailure(webrtc::RTCError error) {
+    std::cout << "offer OnFailure" << ToString(error.type()) << ": " << error.message();
 }

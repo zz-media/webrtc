@@ -56,12 +56,13 @@ int main(int argc, const char* args[])
     rtc::Win32Thread w32_thread(&w32_ss);
     rtc::ThreadManager::Instance()->SetCurrentThread(&w32_thread);
 
-    Conductor conductor;
-    conductor.InitializePeerConnection();
+    //Conductor conductor;//rtc::RefCountInterface
+    rtc::scoped_refptr<Conductor> conductor(new rtc::RefCountedObject<Conductor>());
+    conductor->InitializePeerConnection();
 
     string roomId = "room1";
 
-    socket::ptr current_socket;
+    
     sio::client sioClient;
     connection_listener connectionListener(sioClient);
     
@@ -75,6 +76,7 @@ int main(int argc, const char* args[])
         _cond.wait(_lock);
     }
     _lock.unlock();
+    std::shared_ptr<sio::socket> current_socket;
 	current_socket = sioClient.socket();
 
 	current_socket->on("joined", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck,message::ptr &ack_resp){
@@ -109,7 +111,7 @@ int main(int argc, const char* args[])
         std::cout << "data type:" << type << std::endl;
         if (type == "need_offer") {
             std::cout << "need_offer match" << type << std::endl;
-            //conductor->createOffer();
+            conductor->createOffer();
         }
 
         _lock.unlock();
@@ -117,10 +119,20 @@ int main(int argc, const char* args[])
     }));
 
 
+    //conductor->initSocketio(current_socket);
     current_socket->emit("join", roomId);
+    // Main loop.
+    MSG msg;
+    BOOL gm;
+    ::DispatchMessage(&msg);
+    while ((gm = ::GetMessage(&msg, NULL, 0, 0)) != 0 && gm != -1) {
+        ::DispatchMessage(&msg);
+        //if (!wnd.PreTranslateMessage(&msg)) {
+        ////    //::TranslateMessage(&msg);
+        //    ::DispatchMessage(&msg);
+        //}
+    }
 
-
-    getchar();
 	return 0;
 }
 

@@ -13,7 +13,7 @@ BOOL CALLBACK EnumChildWindowsProc(HWND hWnd, LPARAM lParam)
 {
     char WindowTitle[100] = { 0 };
     ::GetWindowTextA(hWnd, WindowTitle, 100);
-    printf("%s\n", WindowTitle);
+    //printf("%s\n", WindowTitle);
 
     return true;
 }
