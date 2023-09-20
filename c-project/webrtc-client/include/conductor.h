@@ -3,7 +3,7 @@
 #include "api/peer_connection_interface.h"
 #include "sio_socket.h"
 //DataChannelObserver https://blog.csdn.net/doitsjz/article/details/51926583
-class Conductor : public webrtc::PeerConnectionObserver, public webrtc::CreateSessionDescriptionObserver {
+class Conductor : public webrtc::PeerConnectionObserver, public webrtc::CreateSessionDescriptionObserver, public webrtc::DataChannelObserver{
 
 public:
 
@@ -42,10 +42,14 @@ public:
     // CreateSessionDescriptionObserver implementation.
     void OnSuccess(webrtc::SessionDescriptionInterface* desc) override;
     void OnFailure(webrtc::RTCError error) override;
+    //DataChannelObserver implementation
+    void OnMessage(const webrtc::DataBuffer& buffer) override;
+    void OnStateChange() override;
 
 protected:
     std::shared_ptr<sio::socket> current_socket_;
     rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_factory_;
     rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection_;
+    rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel_;
 
 };

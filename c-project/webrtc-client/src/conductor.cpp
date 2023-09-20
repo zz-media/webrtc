@@ -3,6 +3,7 @@
 #include "conductor.h"
 #include "MyCapturer.h"
 #include "MyScreenCapture.h"
+//#include "DesktopCtrlDataChannelObserver.h"
 
 #include "api/create_peerconnection_factory.h"
 #include "api/audio_codecs/audio_decoder_factory.h"
@@ -70,6 +71,14 @@ bool Conductor::InitializePeerConnection() {
 
     AddTracks();
 
+    //std::string lable = "sendDataChannel";
+    //rtc::scoped_refptr<DesktopCtrlDataChannelObserver> observer = new rtc::RefCountedObject<DesktopCtrlDataChannelObserver>();
+    //DesktopCtrlDataChannelObserver* observer = new DesktopCtrlDataChannelObserver();
+    //observer->SetDataChannel(data_channel);
+
+    webrtc::DataChannelInit dataChannelInit;
+    data_channel_ = peer_connection_->CreateDataChannel("sendDataChannel", &dataChannelInit);
+    data_channel_->RegisterObserver(this);
 
     return peer_connection_ != nullptr;
 }
@@ -279,4 +288,33 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
 
 void Conductor::OnFailure(webrtc::RTCError error) {
     std::cout << "offer OnFailure" << ToString(error.type()) << ": " << error.message();
+}
+
+void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
+    // 处理接收到的数据
+    printf("OnMessage");
+    //printf("==================================data=%s\n", buffer.data.data());
+    //std::string data(buffer.data.cdata(), buffer.data.size());
+    //std::cout << "Received message: " << data << std::endl;
+}
+
+void Conductor::OnStateChange() {
+    printf("OnStateChange\n");
+    webrtc::DataChannelInterface::DataState state = data_channel_->state();
+
+    switch (state) {
+    case webrtc::DataChannelInterface::kOpen:
+        std::cout << "DataChannel is now open." << std::endl;
+        data_channel_->Send(webrtc::DataBuffer("hello datachannel"));
+        break;
+    case webrtc::DataChannelInterface::kConnecting:
+        std::cout << "DataChannel is connecting." << std::endl;
+        break;
+    case webrtc::DataChannelInterface::kClosing:
+        std::cout << "DataChannel is closing." << std::endl;
+        break;
+    case webrtc::DataChannelInterface::kClosed:
+        std::cout << "DataChannel is closed." << std::endl;
+        break;
+    }
 }
