@@ -292,10 +292,35 @@ void Conductor::OnFailure(webrtc::RTCError error) {
 
 void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
     // 处理接收到的数据
-    printf("OnMessage");
-    //printf("==================================data=%s\n", buffer.data.data());
-    //std::string data(buffer.data.cdata(), buffer.data.size());
-    //std::cout << "Received message: " << data << std::endl;
+    printf("OnMessage\n");
+    const char* data = (const char*)buffer.data.data();
+    printf("data=%s\n", buffer.data.data());
+
+    rapidjson::Document doc;
+    doc.Parse(data);
+    
+    if (doc.HasMember("event") && doc["event"].IsString()) {
+        std::string event = doc["event"].GetString();
+        if (event == "mousemove") {
+            std::string x = doc["x"].GetString();
+            std::string y = doc["y"].GetString();
+            float floatX = std::stof(x);
+            float floatY = std::stof(y);
+            int intX = 1920 * floatX;
+            int intY = 1080 * floatY;
+            std::cout << "event：" << event << ",x:" << intX << ",y:" << intY << std::endl;
+            SetCursorPos(intX, intY);
+        }else if(event == "click"){
+            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        }else if(event == "click"){
+            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+        }else if (event == "keyTap") {
+            int keyCode = doc["keyCode"].GetInt();
+            keybd_event(keyCode, 0, 0, 0);
+            keybd_event(keyCode, 0, KEYEVENTF_KEYUP, 0);
+        }
+
+    }
 }
 
 void Conductor::OnStateChange() {
