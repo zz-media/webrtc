@@ -64,7 +64,7 @@ MouseListener.prototype.mouseMove=function(){
         x = e.offsetX;
         y = e.offsetY; 
         let coorData= _this.transforCoordinate(e.offsetX,e.offsetY);
-        let data={"event":"mousemove","drag":this.dragMouse,"x":coorData.x,"y":coorData.y}    
+        let data={"event":"mousemove","drag":this.dragMouse,"x":coorData.x+"","y":coorData.y+""}    
        
             _this.setting.sendMsg(data)
 

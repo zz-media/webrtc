@@ -292,9 +292,17 @@ void Conductor::OnFailure(webrtc::RTCError error) {
 
 void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
     // 处理接收到的数据
-    printf("OnMessage\n");
-    const char* data = (const char*)buffer.data.data();
-    printf("data=%s\n", buffer.data.data());
+    printf("OnMessage %s\n",buffer.data.data());
+    // 获取数据缓冲区的指针和实际长度
+    const void* dataPtr = buffer.data.data();
+    size_t dataSize = buffer.size();
+    // 创建一个新的 char 数组，并复制数据
+    char* data = new char[dataSize + 1]; // +1 用于 null 终止符
+    std::memcpy(data, dataPtr, dataSize);
+
+    // 添加 null 终止符
+    data[dataSize] = '\0';
+    printf("data=%s\n", data);
 
     rapidjson::Document doc;
     doc.Parse(data);
@@ -308,6 +316,16 @@ void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
             float floatY = std::stof(y);
             int intX = 1920 * floatX;
             int intY = 1080 * floatY;
+            if (intX < 0) {
+                intX = 0;
+            }else if (intX > 1920) {
+                intX = 1920;
+            }
+            if (intY < 0) {
+                intY = 0;
+            }else if(intY > 1080){
+                intY = 1080;
+            }
             std::cout << "event：" << event << ",x:" << intX << ",y:" << intY << std::endl;
             SetCursorPos(intX, intY);
         }else if(event == "click"){
