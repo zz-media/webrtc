@@ -60,7 +60,7 @@ int main(int argc, const char* args[])
     rtc::scoped_refptr<Conductor> conductor(new rtc::RefCountedObject<Conductor>());
     conductor->InitializePeerConnection();
 
-    string roomId = "room1";
+    string roomId = "roomc";
 
     
     sio::client sioClient;
@@ -69,7 +69,9 @@ int main(int argc, const char* args[])
     sioClient.set_open_listener(std::bind(&connection_listener::on_connected, &connectionListener));
     sioClient.set_close_listener(std::bind(&connection_listener::on_close, &connectionListener,std::placeholders::_1));
     sioClient.set_fail_listener(std::bind(&connection_listener::on_fail, &connectionListener));
-    sioClient.connect("http://127.0.0.1:80");
+    sioClient.connect("ws://127.0.0.1");//124.220.1.36 127.0.0.1
+    //sioClient.connect("ws://127.0.0.1:19000");
+
     _lock.lock();
     if(!connect_finish)
     {

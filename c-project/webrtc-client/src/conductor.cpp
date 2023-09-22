@@ -225,7 +225,7 @@ void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     //current_socket_->emit("message", messageList);
 
     sio::message::list messageList;
-    messageList.push(sio::string_message::create("room1"));
+    messageList.push(sio::string_message::create("roomc"));
     // 创建一个空的 JSON 文档
     rapidjson::Document jsonDoc;
     rapidjson::Document::AllocatorType& allocator = jsonDoc.GetAllocator();
@@ -260,7 +260,7 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     std::cout << "----------------------------" << std::endl;
 
     sio::message::list messageList;
-    messageList.push(sio::string_message::create("room1"));
+    messageList.push(sio::string_message::create("roomc"));
 
     // 创建一个空的 JSON 文档
     rapidjson::Document jsonDoc;
