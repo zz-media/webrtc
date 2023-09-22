@@ -79,7 +79,7 @@ export default {
       localStream: null,
       localMediaChecked: true,
       moreDesCount: 0,
-      wsUrl: "wss://"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
+      wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
       //wsUrl: "wss://"+urlUtil.getUrlDomain()+":8843",
       roomId: "room1",//test-multi room-multi
       //wsUrl: "wss://172.20.123.9:8843",

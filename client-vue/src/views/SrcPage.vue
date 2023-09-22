@@ -68,7 +68,7 @@ export default {
       videoInputValue: null,
       audioInputValue: null,
       audioOutputValue: null,
-      wsUrl: "wss://"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
+      wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
       roomId: "room1",
       //relayUrl: "turn:linux.zdomain.top:3478",
       relayUrl: "turn:172.26.180.229:3478",

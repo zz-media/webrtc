@@ -67,8 +67,8 @@ export default {
 
       console.log("SRC wss连接"+this.wsUrl+" roomId="+this.roomId); 
       //this.socket = io.connect(this.wsUrl);
-      //this.socket = io.connect(this.wsUrl,{path: "/socket.io",transports: ["websocket"]});//this.wsUrl+"?token=123456"
-      this.socket = io.connect("https://192.168.1.105:8888",{path: "/socket.io",transports: ["websocket"]});
+      this.socket = io.connect(this.wsUrl,{path: "/socket.io",transports: ["websocket"]});//this.wsUrl+"?token=123456"
+      //this.socket = io.connect("https://192.168.1.105:8888",{path: "/socket.io",transports: ["websocket"]});
       //this.socket = io.connect("http://10.52.8.25:19000",{path: 'socket.io',transports: ['websocket']})
       console.log(this.socket);
       this.socket.on('src-joined', (roomid, id) => {

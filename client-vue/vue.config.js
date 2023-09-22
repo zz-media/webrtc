@@ -7,12 +7,12 @@ module.exports = {
     https: true,
     proxy: {
       '/socket.io': {
-        target: 'http://192.168.1.105:19000/',//正式服
+        target: 'https://124.220.1.36/',
         changeOrigin: true,
         ws: true
       },
       '/remote-server': {
-        target: 'http://localhost:18080/',//本地springboot
+        target: 'http://124.220.1.36/',
         //target: 'https://172.26.180.229/',//测试服springboot
         changeOrigin: true,
       },

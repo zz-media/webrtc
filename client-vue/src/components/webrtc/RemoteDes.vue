@@ -72,8 +72,8 @@ export default {
 
       console.log("des wss连接"+this.wsUrl+" roomId="+this.roomId); 
       //this.socket = io.connect(this.wsUrl);
-      //this.socket = io.connect(this.wsUrl,{path: "/socket.io",transports: ["websocket"]});//this.wsUrl+"?token=123456"
-      this.socket = io.connect("https://192.168.1.105:8888",{path: "/socket.io",transports: ["websocket"]});
+      this.socket = io.connect(this.wsUrl,{path: "/socket.io",transports: ["websocket"]});//this.wsUrl+"?token=123456"
+      //this.socket = io.connect("https://192.168.1.105:8888",{path: "/socket.io",transports: ["websocket"]});
       //this.socket = io.connect(this.wsUrl+"?token=123456",{path: "/socket.io",transports: ["websocket"]});
       console.log(this.socket);
       this.socket.on('des-joined', (roomid, id) => {
