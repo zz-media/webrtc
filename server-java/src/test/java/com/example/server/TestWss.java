@@ -29,7 +29,7 @@ public class TestWss {
 		};
         
         try{
-        	String url ="https://192.168.1.105:443";
+        	String url ="https://124.220.1.36:443";
         	//String url ="http://121.41.6.222";
         	//String url ="https://172.26.180.229";
         	//String url ="http://172.26.180.229";
@@ -79,7 +79,7 @@ public class TestWss {
 
             socket.connect();
             
-            socket.emit("src-join", "test-https-room");
+            socket.emit("src-join", "testzz-https-room");
             System.out.println("src-join 已发送");
             TimeUnit.SECONDS.sleep(3000);
             System.out.println("111111111disconnect");

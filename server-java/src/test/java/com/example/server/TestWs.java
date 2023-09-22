@@ -29,7 +29,7 @@ public class TestWs {
 //		};
         
         try{
-        	String url ="http://192.168.1.105:19000?token=123456";
+        	String url ="http://124.220.1.36:19000?token=123456";
             IO.Options options = new IO.Options();
             options.path = "/socket.io";
             options.transports = new String[]{"websocket"};
