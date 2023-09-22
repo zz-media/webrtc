@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import RemoteDes from '@/components/webrtc/RemoteDes';
+import RemoteDes from '@/components/webrtc/DeskCtrl';
 import urlUtil from '@/utils/urlUtil.js'
 export default {
   components: {
@@ -81,7 +81,7 @@ export default {
       moreDesCount: 0,
       wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
       //wsUrl: "wss://"+urlUtil.getUrlDomain()+":8843",
-      roomId: "room1",//test-multi room-multi
+      roomId: "roomc",//test-multi room-multi
       //wsUrl: "wss://172.20.123.9:8843",
       //relayUrl: "turn:linux.zdomain.top:3478",
       relayUrl: "turn:172.26.180.229:3478",
@@ -91,20 +91,19 @@ export default {
   },
   mounted:function(){
 
-    if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices){
-      console.log('enumerateDevices is not supported!');
-    }else{
-      var constraints = {
-        video : true, 
-        audio : true 
-      };
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then(this.gotMediaStream)
-        .then(this.gotDevices)
-        .catch(this.handleError);
-    }
+    // if(!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices){
+    //   console.log('enumerateDevices is not supported!');
+    // }else{
+    //   var constraints = {
+    //     video : true, 
+    //     audio : true 
+    //   };
+    //   navigator.mediaDevices.getUserMedia(constraints)
+    //     .then(this.gotMediaStream)
+    //     .then(this.gotDevices)
+    //     .catch(this.handleError);
+    // }
 
-    //console.log("urlUtil.getUrlDomain()",urlUtil.getUrlDomain());
   },
   methods: {
     start() {
@@ -117,7 +116,7 @@ export default {
         localStream: this.localMediaChecked?this.localStream:null,
         //localStream:null
       };
-      console.log("start=",config);
+      //console.log("start=",config);
       this.$refs.RemoteDes.start(config);
 
       for (var i = 1; i <= this.moreDesCount; i++) {
