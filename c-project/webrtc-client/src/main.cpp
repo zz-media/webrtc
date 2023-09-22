@@ -133,7 +133,7 @@ int main(int argc, const char* args[])
     }));
 
 
-    conductor->initSocketio(current_socket);
+    conductor->initSocketio(current_socket, roomId);
     current_socket->emit("join", roomId);
     // Main loop.
     MSG msg;

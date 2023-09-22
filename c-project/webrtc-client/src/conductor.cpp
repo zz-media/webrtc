@@ -143,10 +143,11 @@ void Conductor::AddTracks() {  //音视频操控
     //main_wnd_->SwitchToStreamingUI();
 }
 
-void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket) {
+void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket, std::string roomId) {
     //RTC_LOG(INFO) << "initSocketio";
     std::cout << "initSocketio" << std::endl;
     current_socket_ = current_socket;
+    roomId_ = roomId;
 
     //sio::string roomId = "room1";
     //current_socket_->emit("join", roomId);
@@ -225,7 +226,7 @@ void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     //current_socket_->emit("message", messageList);
 
     sio::message::list messageList;
-    messageList.push(sio::string_message::create("roomc"));
+    messageList.push(sio::string_message::create(roomId_));
     // 创建一个空的 JSON 文档
     rapidjson::Document jsonDoc;
     rapidjson::Document::AllocatorType& allocator = jsonDoc.GetAllocator();
@@ -260,7 +261,7 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     std::cout << "----------------------------" << std::endl;
 
     sio::message::list messageList;
-    messageList.push(sio::string_message::create("roomc"));
+    messageList.push(sio::string_message::create(roomId_));
 
     // 创建一个空的 JSON 文档
     rapidjson::Document jsonDoc;

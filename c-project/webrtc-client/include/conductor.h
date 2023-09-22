@@ -15,7 +15,7 @@ public:
     bool CreatePeerConnection(bool dtls);
     void AddTracks();
 
-    void initSocketio(std::shared_ptr<sio::socket> current_socket);
+    void initSocketio(std::shared_ptr<sio::socket> current_socket, std::string roomId);
     void createOffer();
     void getAnswer(const std::string& sdp);
     void getCandidate(const std::string& sdp, int sdp_mline_index, const std::string& sdp_mid);
@@ -48,6 +48,7 @@ public:
 
 protected:
     std::shared_ptr<sio::socket> current_socket_;
+    std::string roomId_;
     rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peer_connection_factory_;
     rtc::scoped_refptr<webrtc::PeerConnectionInterface> peer_connection_;
     rtc::scoped_refptr<webrtc::DataChannelInterface> data_channel_;
