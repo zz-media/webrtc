@@ -30,6 +30,11 @@ const routes = [
     component: () => import('../views/RelayPage.vue')
   }, 
   {
+    path: '/DeskCtrlPage',
+    name: 'DeskCtrlPage',
+    component: () => import('../views/DeskCtrlPage.vue')
+  },  
+  {
     path: '/SocketManage',
     name: 'SocketManage',
     component: () => import('../views/manage/SocketManage.vue')

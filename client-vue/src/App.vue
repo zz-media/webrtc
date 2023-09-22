@@ -6,6 +6,7 @@
       <router-link to="/SrcPage">SrcPage</router-link><br/>
       <router-link to="/SupervisionList">SupervisionList</router-link><br/>
       <router-link to="/RelayPage">RelayPage</router-link><br/>
+      <router-link to="/DeskCtrlPage">DeskCtrlPage</router-link><br/>
       <router-link to="/SocketManage">SocketManage</router-link><br/>
       <br/>
     </div>
