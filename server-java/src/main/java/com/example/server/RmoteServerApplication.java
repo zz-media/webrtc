@@ -22,6 +22,6 @@ public class RmoteServerApplication {
     public static void main(String[] args){
         SpringApplication application = new SpringApplication(RmoteServerApplication.class);
         application.addListeners(new ApplicationCloseListener()); application.run(args);
-        log.info("js socketio访问：io.connect(url,{path: 'socket.io',transports: ['websocket']})");
+        log.info("js socketio访问：io.connect(url,{path: '/socket.io',transports: ['websocket']})");
     }
 }

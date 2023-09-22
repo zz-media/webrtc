@@ -51,7 +51,8 @@
   <script>
     // 建立连接
     //var socket = io.connect("wss://localhost:8843");
-	var socket = io.connect("ws://localhost");
+	//var socket = io.connect("ws://localhost");
+	var socket = io.connect('ws://ruijie.asia',{path: 'socket.io',transports: ['websocket']})
 	
 	socket.on('joined', (roomid, id) => {
 		console.log('receive joined message!', roomid, id);

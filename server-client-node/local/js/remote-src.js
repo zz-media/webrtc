@@ -187,6 +187,7 @@ function conn(){
 		document.querySelector('#socketInfo').innerHTML = "socket地址："+socketUrl;
 		document.querySelector('#webAddress').innerHTML = "web访问地址："+webUrl+" -- "+"http://localhost/peer/remote-des.html?wss=ws://localhost:80";
 		socket = io.connect(socketUrl);
+		//socket = io.connect('ws://ruijie.asia',{path: '/socket.io',transports: ['websocket']})
 	}else{
 		var socketUrl = "wss://"+config.httpsServerAddress+":"+config.httpsServerPort;
 		var webUrl = "https://"+config.httpsServerAddress+":"+config.httpsServerPort+"/peer/remote-des.html?wss="+socketUrl+"&wssPath=/soc";
