@@ -73,6 +73,7 @@ function conn(){
 	console.log("roomid="+roomid);
 	var wss = getQueryVariable("wss");
 	var wssPath = getQueryVariable("wssPath");
+	//http://localhost/peer/remote-des.html?wss=ws://124.220.1.36&wssPath=/socket.io
 	if(wss){
 		if(wssPath){
 			document.querySelector('#socketHost').value = wss+" "+wssPath;

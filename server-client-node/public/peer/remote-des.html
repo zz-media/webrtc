@@ -77,10 +77,11 @@
 		if(pcDataChannel!=null && pcDataChannel.readyState=='open'){
 			console.log("发送的事件数据",JSON.stringify(data));
 			pcDataChannel.send(JSON.stringify(data));
-		}else{
-			console.log("pcDataChannel",pcDataChannel);
-			//console.log("pcDataChannel.readyState",pcDataChannel.readyState);
 		}
+		// else{
+		// 	console.log("pcDataChannel",pcDataChannel);
+		// 	console.log("pcDataChannel.readyState",pcDataChannel.readyState);
+		// }
 	}
 	
 	new MouseListener().init("remotevideo",{"sendMsg":eventMsg,"pastefile":sendFile});
