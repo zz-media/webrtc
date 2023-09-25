@@ -34,8 +34,8 @@ export default {
   },
   data() {
     return {
-      videoWidth:640,
-      videoHeight:360,
+      videoWidth:1280,
+      videoHeight:720,
       wsUrl: "wss://localhost:8843",
       roomId: "room-multi",
       pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
@@ -75,7 +75,6 @@ export default {
       this.socket = io.connect(this.wsUrl,{path: "/socket.io",transports: ["websocket"]});//this.wsUrl+"?token=123456"
       //this.socket = io.connect("https://192.168.1.105:8888",{path: "/socket.io",transports: ["websocket"]});
       //this.socket = io.connect(this.wsUrl+"?token=123456",{path: "/socket.io",transports: ["websocket"]});
-      //console.log(this.socket);
       this.socket.on('joined', (roomid, id) => {
         console.log('receive joined message!', roomid, id);
         //this.socket.emit('get-ice-servers');
@@ -101,55 +100,6 @@ export default {
       this.socket.on('disconnect', (socket) => {
         console.log('receive disconnect message!',socket);
       });                         
-      // this.socket.on('des-joined-fail', (roomid, id) => {
-      //   console.log('receive des-joined-fail message!', roomid, id);
-      //   this.$message({message: '加入房间失败',type: 'warning'}); 
-      //   setTimeout(()=>{
-      //     this.socket.emit('des-join', this.roomId);
-      //   },3000);
-      // });
-      // this.socket.on('ice-servers', (header, data) => {
-      //   console.log('receive ice-servers message!', header, data);
-      //   if(typeof data === 'string'){
-      //     data = JSON.parse(data);
-      //   }
-      //   this.pcConfig.iceServers = data;
-      //   this.createPeerConnection();
-      // });
-      
-      // this.socket.on('msg', (header,data) => {
-      //   console.log('receive message:', header, data);
-      //   if(typeof header === 'string'){
-      //     header = JSON.parse(header);
-      //   }
-      //   if(header === null || header === undefined){
-      //     console.error('the message is header invalid!');
-      //     return;	
-      //   }
-      //   this.srcSocketId = header.fromSocketId;
-      //   if(typeof data === 'string'){
-      //     data = JSON.parse(data);
-      //   }
-      //   if(data === null || data === undefined){
-      //     console.error('the message is invalid!');
-      //     return;	
-      //   }
-      //   if(data.type === 'offer') {//data.hasOwnProperty('type') && 
-      //     this.pc.setRemoteDescription(new RTCSessionDescription(data));
-      //     this.pc.createAnswer()
-      //       .then(this.getAnswer)
-      //       .catch(this.handleAnswerError);
-      //   }else if (data.type === 'candidate'){//data.hasOwnProperty('type') && 
-      //     var candidate = new RTCIceCandidate({
-      //       sdpMLineIndex: data.label,
-      //       candidate: data.candidate
-      //     });
-      //     this.pc.addIceCandidate(candidate);	
-        
-      //   }else{
-      //     console.log('the message is invalid!!!', data);
-      //   }
-      // });
       this.socket.on('message', (roomid, data) => {
         console.log('receive message!', roomid, data);
         if(typeof data === 'string'){
@@ -294,12 +244,9 @@ export default {
       // }
     },
     getAnswer(desc){
-      //desc.sdp = desc.sdp.replace(/VP/g,"H26411111111");
       console.log("getAnswer:",desc);
-      console.log("getAnswer sdp:",desc.sdp);
+      //console.log("getAnswer sdp:",desc.sdp);
       this.pc.setLocalDescription(desc);
-      //answer.value = desc.sdp;
-      //send answer sdp
       this.sendMessage(this.roomId,desc);
     },
     handleAnswerError(err){
