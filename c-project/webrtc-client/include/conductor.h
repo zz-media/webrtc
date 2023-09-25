@@ -14,6 +14,7 @@ public:
     bool InitializePeerConnection();
     bool CreatePeerConnection(bool dtls);
     void AddTracks();
+    void createDataChannel();
 
     void initSocketio(std::shared_ptr<sio::socket> current_socket, std::string roomId);
     void createOffer();

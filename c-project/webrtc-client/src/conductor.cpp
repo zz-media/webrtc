@@ -71,14 +71,7 @@ bool Conductor::InitializePeerConnection() {
 
     AddTracks();
 
-    //std::string lable = "sendDataChannel";
-    //rtc::scoped_refptr<DesktopCtrlDataChannelObserver> observer = new rtc::RefCountedObject<DesktopCtrlDataChannelObserver>();
-    //DesktopCtrlDataChannelObserver* observer = new DesktopCtrlDataChannelObserver();
-    //observer->SetDataChannel(data_channel);
-
-    webrtc::DataChannelInit dataChannelInit;
-    data_channel_ = peer_connection_->CreateDataChannel("sendDataChannel", &dataChannelInit);
-    data_channel_->RegisterObserver(this);
+    createDataChannel();
 
     return peer_connection_ != nullptr;
 }
@@ -141,6 +134,17 @@ void Conductor::AddTracks() {  //ÒôÊÓÆµ²Ù¿Ø
     }
 
     //main_wnd_->SwitchToStreamingUI();
+}
+
+void Conductor::createDataChannel() {
+    //std::string lable = "sendDataChannel";
+    //rtc::scoped_refptr<DesktopCtrlDataChannelObserver> observer = new rtc::RefCountedObject<DesktopCtrlDataChannelObserver>();
+    //DesktopCtrlDataChannelObserver* observer = new DesktopCtrlDataChannelObserver();
+    //observer->SetDataChannel(data_channel);
+
+    webrtc::DataChannelInit dataChannelInit;
+    data_channel_ = peer_connection_->CreateDataChannel("sendDataChannel", &dataChannelInit);
+    data_channel_->RegisterObserver(this);
 }
 
 void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket, std::string roomId) {

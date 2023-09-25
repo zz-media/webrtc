@@ -112,15 +112,15 @@ function conn(){
 		if(state === 'joined_unbind'){
 			createPeerConnection();
 		}
-		pcDataChannel = pc.createDataChannel('sendDataChannel');
-		pcDataChannel.onmessage = onReceiveMessage;
-		pcDataChannel.onopen = onReceiveChannelStateChange;
-		pcDataChannel.onclose = onReceiveChannelStateChange;	
+		// pcDataChannel = pc.createDataChannel('sendDataChannel');
+		// pcDataChannel.onmessage = onReceiveMessage;
+		// pcDataChannel.onopen = onReceiveChannelStateChange;
+		// pcDataChannel.onclose = onReceiveChannelStateChange;	
 		
-		pcFileChannel = pc.createDataChannel('pcFileChannel');
-		pcFileChannel.onmessage = onReceiveMessageFile;
-		pcFileChannel.onopen = onReceiveChannelStateChangeFile;
-		pcFileChannel.onclose = onReceiveChannelStateChangeFile;			
+		// pcFileChannel = pc.createDataChannel('pcFileChannel');
+		// pcFileChannel.onmessage = onReceiveMessageFile;
+		// pcFileChannel.onopen = onReceiveChannelStateChangeFile;
+		// pcFileChannel.onclose = onReceiveChannelStateChangeFile;			
 
 		state = 'joined_conn';
 		//call();
@@ -289,7 +289,7 @@ function createPeerConnection(){
 
 		//pcDataChannel = pc.createDataChannel('sendDataChannel');
 		pc.ondatachannel = (event) => {
-			console.log("pc.ondatachannel",event);
+			console.log("pc.ondatachannel",event,event.channel.label);
 			if(event.channel.label=="sendDataChannel" && !pcDataChannel){
 				pcDataChannel = event.channel;
 				pcDataChannel.onmessage = onReceiveMessage;
