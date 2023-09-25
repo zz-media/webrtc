@@ -41,6 +41,7 @@ export default {
       pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
       socket: null,
       pc: null,
+      pcDataChannel: null,
       sender: null,
       srcSocketId: null,
       remoteStream: null,
@@ -234,6 +235,15 @@ export default {
         this.remoteStream = e.streams[0];
         this.$refs.remoteVideo.srcObject = this.remoteStream;   
       }
+      this.pc.ondatachannel = (event) => {
+        console.log("pc.ondatachannel",event,event.channel.label);
+        if(event.channel.label=="sendDataChannel" && !this.pcDataChannel){
+          this.pcDataChannel = event.channel;
+          this.pcDataChannel.onmessage = this.onReceiveMessage;
+          this.pcDataChannel.onopen = this.onReceiveChannelStateChange;
+          this.pcDataChannel.onclose = this.onReceiveChannelStateChange;
+        }
+      };      
       // if(this.localStream === null || this.localStream === undefined) {
       //   console.error('localstream is null or undefined!');
       // }else{
@@ -276,7 +286,11 @@ export default {
     //   this.socket.emit('msg', JSON.stringify(header), JSON.stringify(data));
     // },
     ctrlCallback(data){
-      console.log("ctrlCallback",data);
+      //console.log("ctrlCallback",data);
+      if(this.pcDataChannel!=null && this.pcDataChannel.readyState=='open'){
+        console.log("发送的事件数据",JSON.stringify(data));
+        this.pcDataChannel.send(JSON.stringify(data));
+      }      
     },
     move(e){
       console.log("movestart");
@@ -304,7 +318,14 @@ export default {
       }else{
         this.$refs.remoteVideo.muted = true;
       }
-    }
+    },
+    onReceiveMessage(event) {
+      console.log("收到事件数据",event.data);	
+    },
+    onReceiveChannelStateChange(event) {
+      var readyState = this.pcDataChannel.readyState;
+      console.log("onReceiveChannelStateChange",event,readyState);
+    }  
   }
 }
 </script>

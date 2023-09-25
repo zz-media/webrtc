@@ -319,8 +319,15 @@ void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
             std::string y = doc["y"].GetString();
             float floatX = std::stof(x);
             float floatY = std::stof(y);
-            int intX = 1920 * floatX;
-            int intY = 1080 * floatY;
+            int intX, intY;
+            if (floatX<1 && floatY<1) {
+                intX = 1920 * floatX;
+                intY = 1080 * floatY;
+            } else {
+                intX = 1 * floatX;
+                intY = 1 * floatY;
+            }
+
             if (intX < 0) {
                 intX = 0;
             }else if (intX > 1920) {

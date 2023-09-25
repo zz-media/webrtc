@@ -11,12 +11,16 @@ function init(dom,ctrlCallback) {
 	}
 	dom.onmousedown = (e)=> {
 		console.log("mousedown",e);
+		//ctrlCallback(e);
 	}
 	dom.onmouseup = (e)=> {
 		console.log("onmouseup",e);
 	}
 	dom.onmousemove = (e)=> {
-		//console.log("mouseMove",e);
+		console.log("mouseMove",e);
+		//var coorData = {x:x?(x/_this.w).toFixed(5):0,y:y?(y/_this.h).toFixed(5):0}
+		let data={"event":"mousemove","x":e.offsetX+"","y":e.offsetY+""};
+		ctrlCallback(data);
 	}
 	dom.onmousewheel = (e)=> {
 		if (e.preventDefault){ 
@@ -38,7 +42,7 @@ function init(dom,ctrlCallback) {
 		let y = e.offsetY; 
 		let data = {"event":"contextmenu","x":x,"y":y};
 		console.log("oncontextmenu",data);	
-		ctrlCallback(data);	
+		//ctrlCallback(data);	
 	}
 	document.onkeydown = (e)=> {
 		if(!inDom){
