@@ -216,19 +216,6 @@ void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     std::string sdp;
     candidate->ToString(&sdp);
 
-    //sio::message::list messageList;
-    //messageList.push(sio::string_message::create("room1"));
-    //Json::StyledWriter writer;
-    //Json::Value data;
-    //data["type"] = "candidate";
-    //data["label"] = sdp_mline_index;
-    //data["candidate"] = sdp;
-    //data["sdp_mid"] = sdp_mid;
-
-    //std::string dataStr = writer.write(data);
-    //messageList.push(sio::string_message::create(dataStr));
-    //current_socket_->emit("message", messageList);
-
     sio::message::list messageList;
     messageList.push(sio::string_message::create(roomId_));
     // 创建一个空的 JSON 文档
@@ -258,15 +245,12 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     peer_connection_->SetLocalDescription(DummySetSessionDescriptionObserver::Create(), desc);
     std::string sdp;
     desc->ToString(&sdp);
-    std::cout << "sdp:----------------------------" << std::endl;
-    std::cout << sdp << std::endl;
-    std::cout << "webrtc::SdpTypeToString(desc->GetType()):----------------------------" << std::endl;
-    std::cout << webrtc::SdpTypeToString(desc->GetType()) << std::endl;
+    std::cout << webrtc::SdpTypeToString(desc->GetType()) << "sdp:----------------------------" << std::endl;
+    //std::cout << sdp << std::endl;
     std::cout << "----------------------------" << std::endl;
 
     sio::message::list messageList;
     messageList.push(sio::string_message::create(roomId_));
-
     // 创建一个空的 JSON 文档
     rapidjson::Document jsonDoc;
     rapidjson::Document::AllocatorType& allocator = jsonDoc.GetAllocator();
@@ -281,14 +265,6 @@ void Conductor::OnSuccess(webrtc::SessionDescriptionInterface* desc) {
     //std::cout << "Generated JSON: " << jsonString << std::endl;
     messageList.push(sio::string_message::create(jsonString));
     current_socket_->emit("message", messageList);
-
-    //Json::StyledWriter writer;
-    //Json::Value data;
-    //data["type"] = webrtc::SdpTypeToString(desc->GetType());
-    //data["sdp"] = sdp;
-    //std::string dataStr = writer.write(data);
-    //messageList.push(sio::string_message::create(dataStr));
-    //current_socket_->emit("message", messageList);
 }
 
 void Conductor::OnFailure(webrtc::RTCError error) {
@@ -339,7 +315,7 @@ void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
                 intY = 1080;
             }
             std::cout << "event：" << event << ",x:" << intX << ",y:" << intY << std::endl;
-            SetCursorPos(intX, intY);
+            //SetCursorPos(intX, intY);
         }else if(event == "click"){
             mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }else if(event == "click"){

@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText roomEditText = findViewById(R.id.RoomEditText);
         final RadioGroup captureRradioGroup = findViewById(R.id.captureRradioGroup);
 //        serverEditText.setText("stun.l.google.com:19302");
-        //serverEditText.setText("https://10.52.8.25:8843");
+        //serverEditText.setText("http://10.52.8.25");
         serverEditText.setText("http://10.52.8.25:19000");
         //serverEditText.setText("http://124.220.1.36:19000");
         roomEditText.setText("rooma");

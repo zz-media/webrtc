@@ -474,12 +474,14 @@ public class CallActivity extends AppCompatActivity {
 
         @Override
         public void onBufferedAmountChange(long l) {
-            Log.d(TAG, "onBufferedAmountChange");
+            Log.d(TAG, "mDataChannelObserver onBufferedAmountChange");
+            logcatOnUI("mDataChannelObserver onBufferedAmountChange");
         }
 
         @Override
         public void onStateChange() {
             Log.d(TAG, "DataChannel: onStateChange: " + mDataChannel.state());
+            logcatOnUI("DataChannel: onStateChange: " + mDataChannel.state());
         }
     };
 
