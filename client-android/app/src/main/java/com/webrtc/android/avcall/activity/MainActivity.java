@@ -22,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
         final EditText roomEditText = findViewById(R.id.RoomEditText);
 //        serverEditText.setText("stun.l.google.com:19302");
         //serverEditText.setText("https://10.52.8.25:8843");
-        serverEditText.setText("http://10.52.8.25");
-        roomEditText.setText("room1");
+        serverEditText.setText("http://10.52.8.25:19000");
+        //serverEditText.setText("http://124.220.1.36:19000");
+        roomEditText.setText("rooma");
         findViewById(R.id.JoinRoomBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

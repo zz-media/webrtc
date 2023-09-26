@@ -7,7 +7,8 @@ module.exports = {
     https: true,
     proxy: {
       '/socket.io': {
-        target: 'https://124.220.1.36/',
+        //target: 'https://124.220.1.36/',
+        target: 'http://10.52.8.25:19000/',
         changeOrigin: true,
         ws: true
       },

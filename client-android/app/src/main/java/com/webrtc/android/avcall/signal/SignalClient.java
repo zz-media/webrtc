@@ -66,13 +66,18 @@ public class SignalClient {
 //            IO.setDefaultOkHttpWebSocketFactory(okHttpClient);
 //            IO.setDefaultOkHttpCallFactory(okHttpClient);
 //
-//            IO.Options options = new IO.Options();
-//            options.timeout = 3000;
-//            options.path = "/soc";
-//            mSocket = IO.socket(url, options);
-//            mSocket.connect();
-            mSocket = IO.socket(url);
-            mSocket.connect();
+            if(url.equals("http://10.52.8.25:19000")) {
+                IO.Options options = new IO.Options();
+                options.timeout = 3000;
+                options.path = "/socket.io";
+                options.transports = new String[]{"websocket"};
+                mSocket = IO.socket(url, options);
+                mSocket.connect();
+            }else{
+                mSocket = IO.socket(url);
+                mSocket.connect();
+            }
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return;
