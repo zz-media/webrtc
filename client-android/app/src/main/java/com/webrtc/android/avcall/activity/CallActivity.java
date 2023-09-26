@@ -181,7 +181,12 @@ public class CallActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if(mVideoCapturer!=null){
-            mVideoCapturer.startCapture(VIDEO_RESOLUTION_WIDTH, VIDEO_RESOLUTION_HEIGHT, VIDEO_FPS);
+            try {
+                //这里要判断下已经start就不要start，暂时先用try catch处理
+                mVideoCapturer.startCapture(VIDEO_RESOLUTION_WIDTH, VIDEO_RESOLUTION_HEIGHT, VIDEO_FPS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -191,9 +196,9 @@ public class CallActivity extends AppCompatActivity {
         super.onPause();
         try {
             if(mVideoCapturer!=null) {
-                mVideoCapturer.stopCapture();
+                //mVideoCapturer.stopCapture();
             }
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -392,7 +397,9 @@ public class CallActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 获取MediaProjectionManager对象
-            mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+            if(mMediaProjectionManager == null){
+                mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+            }
             if (mMediaProjectionManager != null) {
                 // 获取MediaProjection对象
                 Logging.d(TAG, "mediaProjectionManager."+mMediaProjectionManager);
