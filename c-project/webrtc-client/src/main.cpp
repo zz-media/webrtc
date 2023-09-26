@@ -110,9 +110,9 @@ int main(int argc, const char* args[])
         sio::message::ptr data = dataList.at(1);
 
         std::string type = data->get_map()["type"]->get_string();
-        std::cout << "data type:" << type << std::endl;
+        std::cout << "message data type:" << type << std::endl;
         if (type == "need_offer") {
-            std::cout << "need_offer match" << type << std::endl;
+            //std::cout << "need_offer match" << type << std::endl;
             conductor->createOffer();
         }
         else if (type == "answer") {

@@ -76,7 +76,7 @@ bool Conductor::InitializePeerConnection() {
     return peer_connection_ != nullptr;
 }
 bool Conductor::CreatePeerConnection(bool dtls) {
-
+    std::cout << "CreatePeerConnection" << std::endl;
     webrtc::PeerConnectionInterface::RTCConfiguration config;
     config.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
     config.enable_dtls_srtp = dtls;
@@ -102,6 +102,7 @@ void Conductor::AddTracks() {  //ÒôÊÓÆµ²Ù¿Ø
         std::cout << "AddTracks:Already added tracks" << std::endl;
         return;  // Already added tracks.
     }
+    std::cout << "AddTracks" << std::endl;
     const char kAudioLabel[] = "audio_label";
     const char kVideoLabel[] = "video_label";
     const char kStreamId[] = "stream_id";
@@ -141,7 +142,7 @@ void Conductor::createDataChannel() {
     //rtc::scoped_refptr<DesktopCtrlDataChannelObserver> observer = new rtc::RefCountedObject<DesktopCtrlDataChannelObserver>();
     //DesktopCtrlDataChannelObserver* observer = new DesktopCtrlDataChannelObserver();
     //observer->SetDataChannel(data_channel);
-
+    std::cout << "createDataChannel" << std::endl;
     webrtc::DataChannelInit dataChannelInit;
     data_channel_ = peer_connection_->CreateDataChannel("sendDataChannel", &dataChannelInit);
     data_channel_->RegisterObserver(this);
@@ -158,9 +159,9 @@ void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket, std::s
 }
 
 void Conductor::createOffer() {
-    std::cout << "void Conductor::createOffer" << std::endl;
+    std::cout << "Conductor::createOffer" << std::endl;
     peer_connection_->CreateOffer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
-    std::cout << "void Conductor::createOffer success" << std::endl;
+    //std::cout << "void Conductor::createOffer success" << std::endl;
 }
 
 void Conductor::getAnswer(const std::string& sdp) {

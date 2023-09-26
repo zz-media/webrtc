@@ -303,7 +303,7 @@ function createPeerConnection(){
 			}
 		};		
 	}else {
-		console.warning('the pc have be created!');
+		console.log('the pc have be created!');
 	}
 }
 
