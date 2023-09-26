@@ -127,24 +127,26 @@ public class CallActivity extends AppCompatActivity {
         // NOTE: this _must_ happen while PeerConnectionFactory is alive!
         Logging.enableLogToDebugOutput(Logging.Severity.LS_VERBOSE);
 
-        createScreenCapturer();
-//        mVideoCapturer = createVideoCapturer();
-//        mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
-//        VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
-//        mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
-//        mVideoTrack = mPeerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
-//        mVideoTrack.setEnabled(true);
-//        mVideoTrack.addSink(mLocalSurfaceView);
-//
-//        AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
-//        mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
-//        mAudioTrack.setEnabled(true);
-//
-//        SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
-//
-//        String serverAddr = getIntent().getStringExtra("ServerAddr");
-//        String roomName = getIntent().getStringExtra("RoomName");
-//        SignalClient.getInstance().joinRoom(serverAddr, roomName);
+
+        if(captureMode==0){//捕获摄像头
+            mVideoCapturer = createVideoCapturer();
+            mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
+            VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
+            mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+            mVideoTrack = mPeerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
+            mVideoTrack.setEnabled(true);
+            mVideoTrack.addSink(mLocalSurfaceView);
+
+            AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
+            mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
+            mAudioTrack.setEnabled(true);
+
+            SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
+            SignalClient.getInstance().joinRoom(mServerAddr, mRoomName);
+        }else{//捕获屏幕
+            createScreenCapturer();
+        }
+
     }
 
     @Override
@@ -171,10 +173,7 @@ public class CallActivity extends AppCompatActivity {
             mAudioTrack.setEnabled(true);
 
             SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
-
-            String serverAddr = getIntent().getStringExtra("ServerAddr");
-            String roomName = getIntent().getStringExtra("RoomName");
-            SignalClient.getInstance().joinRoom(serverAddr, roomName);
+            SignalClient.getInstance().joinRoom(mServerAddr, mRoomName);
         }
     }
 
