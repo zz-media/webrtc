@@ -71,7 +71,7 @@ bool Conductor::InitializePeerConnection() {
 
     AddTracks();
 
-    createDataChannel();
+    //createDataChannel();
 
     return peer_connection_ != nullptr;
 }
