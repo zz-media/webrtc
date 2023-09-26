@@ -91,10 +91,17 @@ public class CallActivity extends AppCompatActivity {
     private MediaProjectionManager mMediaProjectionManager;
     private VideoCapturer mVideoCapturer;
 
+    private String mServerAddr;
+    private String mRoomName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call);
+
+        mServerAddr = getIntent().getStringExtra("ServerAddr");
+        mRoomName = getIntent().getStringExtra("RoomName");
+        int captureMode = getIntent().getIntExtra("CaptureMode",0);
 
         mLogcatView = findViewById(R.id.LogcatView);
 

@@ -38,4 +38,24 @@
         android:layout_margin="10dp"
         android:text="@string/join_room" />
 
+    <RadioGroup
+        android:id="@+id/captureRradioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/captureScreenButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="捕获摄像头"
+            />
+        <RadioButton
+            android:id="@+id/captureCameraButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="捕获屏幕"
+            android:checked="true"
+            />
+    </RadioGroup>
+
 </LinearLayout>
