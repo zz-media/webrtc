@@ -1,7 +1,11 @@
 package com.webrtc.android.avcall.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,6 +36,7 @@ import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
 import org.webrtc.RtpReceiver;
+import org.webrtc.ScreenCapturerAndroid;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceTextureHelper;
@@ -83,6 +88,7 @@ public class CallActivity extends AppCompatActivity {
     private VideoTrack mVideoTrack;
     private AudioTrack mAudioTrack;
 
+    private MediaProjectionManager mMediaProjectionManager;
     private VideoCapturer mVideoCapturer;
 
     @Override
@@ -99,7 +105,7 @@ public class CallActivity extends AppCompatActivity {
 
         mLocalSurfaceView.init(mRootEglBase.getEglBaseContext(), null);
         mLocalSurfaceView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FILL);
-        mLocalSurfaceView.setMirror(true);
+        //mLocalSurfaceView.setMirror(true);
         mLocalSurfaceView.setEnableHardwareScaler(false /* enabled */);
 
         mRemoteSurfaceView.init(mRootEglBase.getEglBaseContext(), null);
@@ -114,37 +120,73 @@ public class CallActivity extends AppCompatActivity {
         // NOTE: this _must_ happen while PeerConnectionFactory is alive!
         Logging.enableLogToDebugOutput(Logging.Severity.LS_VERBOSE);
 
-        mVideoCapturer = createVideoCapturer();
-        mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
-        VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
-        mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+        createScreenCapturer();
+//        mVideoCapturer = createVideoCapturer();
+//        mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
+//        VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
+//        mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+//        mVideoTrack = mPeerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
+//        mVideoTrack.setEnabled(true);
+//        mVideoTrack.addSink(mLocalSurfaceView);
+//
+//        AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
+//        mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
+//        mAudioTrack.setEnabled(true);
+//
+//        SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
+//
+//        String serverAddr = getIntent().getStringExtra("ServerAddr");
+//        String roomName = getIntent().getStringExtra("RoomName");
+//        SignalClient.getInstance().joinRoom(serverAddr, roomName);
+    }
 
-        mVideoTrack = mPeerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
-        mVideoTrack.setEnabled(true);
-        mVideoTrack.addSink(mLocalSurfaceView);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        Logging.d(TAG, "onActivityResult "+requestCode+" "+resultCode +" "+intent);
+        if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
+            mVideoCapturer = new ScreenCapturerAndroid(intent, new MediaProjection.Callback() {
+                @Override
+                public void onStop() {
+                    super.onStop();
+                }
+            });
 
-        AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
-        mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
-        mAudioTrack.setEnabled(true);
+            mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
+            VideoSource videoSource = mPeerConnectionFactory.createVideoSource(true);
+            mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
 
-        SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
+            mVideoTrack = mPeerConnectionFactory.createVideoTrack("videoTrack", videoSource);
+            mVideoTrack.setEnabled(true);
+            mVideoTrack.addSink(mLocalSurfaceView);
 
-        String serverAddr = getIntent().getStringExtra("ServerAddr");
-        String roomName = getIntent().getStringExtra("RoomName");
-        SignalClient.getInstance().joinRoom(serverAddr, roomName);
+            AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
+            mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
+            mAudioTrack.setEnabled(true);
+
+            SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
+
+            String serverAddr = getIntent().getStringExtra("ServerAddr");
+            String roomName = getIntent().getStringExtra("RoomName");
+            SignalClient.getInstance().joinRoom(serverAddr, roomName);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mVideoCapturer.startCapture(VIDEO_RESOLUTION_WIDTH, VIDEO_RESOLUTION_HEIGHT, VIDEO_FPS);
+        if(mVideoCapturer!=null){
+            mVideoCapturer.startCapture(VIDEO_RESOLUTION_WIDTH, VIDEO_RESOLUTION_HEIGHT, VIDEO_FPS);
+        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         try {
-            mVideoCapturer.stopCapture();
+            if(mVideoCapturer!=null) {
+                mVideoCapturer.stopCapture();
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -338,6 +380,22 @@ public class CallActivity extends AppCompatActivity {
         builder.setOptions(null);
 
         return builder.createPeerConnectionFactory();
+    }
+
+    private VideoCapturer createScreenCapturer(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 获取MediaProjectionManager对象
+            mMediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+            if (mMediaProjectionManager != null) {
+                // 获取MediaProjection对象
+                Logging.d(TAG, "mediaProjectionManager."+mMediaProjectionManager);
+                Intent permissionIntent = mMediaProjectionManager.createScreenCaptureIntent();
+                startActivityForResult(permissionIntent, 123);//SCREEN_CAPTURE_REQUEST_CODE
+            }
+        }
+
+        return null;
     }
 
     /*
