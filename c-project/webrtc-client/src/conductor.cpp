@@ -138,11 +138,12 @@ void Conductor::createDataChannel() {
     //rtc::scoped_refptr<DesktopCtrlDataChannelObserver> observer = new rtc::RefCountedObject<DesktopCtrlDataChannelObserver>();
     //DesktopCtrlDataChannelObserver* observer = new DesktopCtrlDataChannelObserver();
     //observer->SetDataChannel(data_channel);
-    if (data_channel_) {
-        std::cout << "closeDataChannel" << std::endl;
-        data_channel_->Close();
-        data_channel_->RegisterObserver(nullptr);
-    }
+
+    //if (data_channel_) {
+    //    std::cout << "closeDataChannel" << std::endl;
+    //    data_channel_->Close();
+    //    data_channel_->RegisterObserver(nullptr);
+    //}
     std::cout << "createDataChannel" << std::endl;
     webrtc::DataChannelInit dataChannelInit;
     data_channel_ = peer_connection_->CreateDataChannel("sendDataChannel", &dataChannelInit);
@@ -211,6 +212,9 @@ void Conductor::OnRemoveTrack(
     //RTC_LOG(INFO) << __FUNCTION__ << " " << receiver->id();
     std::cout << "OnRemoveTrack" << std::endl;
 
+}
+void Conductor::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> channel) {
+    std::cout << "OnDataChannel" << channel->label() << webrtc::DataChannelInterface::DataStateString(channel->state()) << std::endl; 
 }
 void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     int sdp_mline_index = candidate->sdp_mline_index();
