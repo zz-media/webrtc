@@ -252,8 +252,8 @@ public class CallActivity extends AppCompatActivity {
         });
     }
 
-    public void doStartCall() {
-        logcatOnUI("Start Call, Wait ...");
+    public void createOffer() {
+        logcatOnUI("Start createOffer");
         if (mPeerConnection == null) {
             mPeerConnection = createPeerConnection();
         }
@@ -616,7 +616,7 @@ public class CallActivity extends AppCompatActivity {
 
             mState = "joined_conn";
             //调用call， 进行媒体协商
-            doStartCall();
+            createOffer();
         }
 
         @Override
