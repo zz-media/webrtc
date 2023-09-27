@@ -215,6 +215,7 @@ void Conductor::OnRemoveTrack(
 }
 void Conductor::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> channel) {
     std::cout << "OnDataChannel" << channel->label() << webrtc::DataChannelInterface::DataStateString(channel->state()) << std::endl; 
+    //channel->RegisterObserver(this);
 }
 void Conductor::OnIceCandidate(const webrtc::IceCandidateInterface* candidate) {
     int sdp_mline_index = candidate->sdp_mline_index();
@@ -277,6 +278,7 @@ void Conductor::OnFailure(webrtc::RTCError error) {
     std::cout << "offer OnFailure" << ToString(error.type()) << ": " << error.message();
 }
 
+//DataChannelObserver implementation
 void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
     // 处理接收到的数据
     printf("OnMessage %s\n",buffer.data.data());
