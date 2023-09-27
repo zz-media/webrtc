@@ -123,7 +123,7 @@ public class CallActivity extends AppCompatActivity {
 
         //创建 factory， pc是从factory里获得的
         mPeerConnectionFactory = createPeerConnectionFactory(this);
-
+        mPeerConnection = createPeerConnection();
         // NOTE: this _must_ happen while PeerConnectionFactory is alive!
         Logging.enableLogToDebugOutput(Logging.Severity.LS_VERBOSE);
 
@@ -135,6 +135,7 @@ public class CallActivity extends AppCompatActivity {
         }else{//捕获屏幕
             createScreenCapturerPermission();
         }
+
 
     }
 
@@ -299,6 +300,7 @@ public class CallActivity extends AppCompatActivity {
 
     public PeerConnection createPeerConnection() {
         Log.i(TAG, "Create PeerConnection ...");
+        logcatOnUI("Create PeerConnection");
 
         LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<PeerConnection.IceServer>();
 
@@ -323,17 +325,11 @@ public class CallActivity extends AppCompatActivity {
         // Enable DTLS for normal calls and disable for loopback calls.
         rtcConfig.enableDtlsSrtp = true;
         //rtcConfig.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN;
-        PeerConnection connection =
-                mPeerConnectionFactory.createPeerConnection(rtcConfig,
-                        mPeerConnectionObserver);
+        PeerConnection connection = mPeerConnectionFactory.createPeerConnection(rtcConfig, mPeerConnectionObserver);
         if (connection == null) {
             Log.e(TAG, "Failed to createPeerConnection !");
             return null;
         }
-
-        List<String> mediaStreamLabels = Collections.singletonList("ARDAMS");
-        connection.addTrack(mVideoTrack, mediaStreamLabels);
-        connection.addTrack(mAudioTrack, mediaStreamLabels);
 
         return connection;
     }
@@ -366,7 +362,7 @@ public class CallActivity extends AppCompatActivity {
         return builder.createPeerConnectionFactory();
     }
     private void addCameraTracks(){
-        mVideoCapturer = createVideoCapturer();
+        mVideoCapturer = createCameraCapturer();
         mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
         VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
         mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
@@ -377,6 +373,11 @@ public class CallActivity extends AppCompatActivity {
         AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
         mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
         mAudioTrack.setEnabled(true);
+
+        List<String> mediaStreamLabels = Collections.singletonList("ARDAMS");
+        mPeerConnection.addTrack(mVideoTrack, mediaStreamLabels);
+        mPeerConnection.addTrack(mAudioTrack, mediaStreamLabels);
+
     }
 
     private void addScreenTracks(Intent intent){
@@ -386,7 +387,6 @@ public class CallActivity extends AppCompatActivity {
                 super.onStop();
             }
         });
-
         mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
         VideoSource videoSource = mPeerConnectionFactory.createVideoSource(true);
         mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
@@ -398,6 +398,10 @@ public class CallActivity extends AppCompatActivity {
         AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
         mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
         mAudioTrack.setEnabled(true);
+
+        List<String> mediaStreamLabels = Collections.singletonList("ARDAMS");
+        mPeerConnection.addTrack(mVideoTrack, mediaStreamLabels);
+        mPeerConnection.addTrack(mAudioTrack, mediaStreamLabels);
     }
 
     private VideoCapturer createScreenCapturerPermission(){
@@ -422,7 +426,7 @@ public class CallActivity extends AppCompatActivity {
      * Read more about Camera2 here
      * https://developer.android.com/reference/android/hardware/camera2/package-summary.html
      **/
-    private VideoCapturer createVideoCapturer() {
+    private VideoCapturer createCameraCapturer() {
         if (Camera2Enumerator.isSupported(this)) {
             return createCameraCapturer(new Camera2Enumerator(this));
         } else {
