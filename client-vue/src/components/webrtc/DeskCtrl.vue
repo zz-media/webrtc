@@ -237,7 +237,7 @@ export default {
       }
       this.pc.ondatachannel = (event) => {
         console.log("pc.ondatachannel",event,event.channel.label);
-        if(event.channel.label=="sendDataChannel" && !this.pcDataChannel){
+        if(event.channel.label=="sendDataChannel"){//&& !this.pcDataChannel
           this.pcDataChannel = event.channel;
           this.pcDataChannel.onmessage = this.onReceiveMessage;
           this.pcDataChannel.onopen = this.onReceiveChannelStateChange;

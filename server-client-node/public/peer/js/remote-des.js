@@ -290,12 +290,12 @@ function createPeerConnection(){
 		//pcDataChannel = pc.createDataChannel('sendDataChannel');
 		pc.ondatachannel = (event) => {
 			console.log("pc.ondatachannel",event,event.channel.label);
-			if(event.channel.label=="sendDataChannel" && !pcDataChannel){
+			if(event.channel.label=="sendDataChannel"){//&& !pcDataChannel
 				pcDataChannel = event.channel;
 				pcDataChannel.onmessage = onReceiveMessage;
 				pcDataChannel.onopen = onReceiveChannelStateChange;
 				pcDataChannel.onclose = onReceiveChannelStateChange;
-			}else if(event.channel.label=="pcFileChannel" && !pcFileChannel){
+			}else if(event.channel.label=="pcFileChannel"){// && !pcFileChannel
 				pcFileChannel = event.channel;
 				pcFileChannel.onmessage = onReceiveMessageFile;
 				pcFileChannel.onopen = onReceiveChannelStateChangeFile;
