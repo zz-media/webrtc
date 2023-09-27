@@ -62,24 +62,18 @@ bool Conductor::InitializePeerConnection() {
         //DeletePeerConnection();
         return false;
     }
-    if (!CreatePeerConnection(/*dtls=*/true)) {
+    if (!CreatePeerConnection()) {
         //main_wnd_->MessageBox("Error", "CreatePeerConnection failed", true);
         std::cout << "CreatePeerConnection failed" << std::endl;
         //DeletePeerConnection();
     }
-
-
-    AddTracks();
-
-    //createDataChannel();
-
     return peer_connection_ != nullptr;
 }
-bool Conductor::CreatePeerConnection(bool dtls) {
+bool Conductor::CreatePeerConnection() {
     std::cout << "CreatePeerConnection" << std::endl;
     webrtc::PeerConnectionInterface::RTCConfiguration config;
     config.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
-    config.enable_dtls_srtp = dtls;
+    config.enable_dtls_srtp = true;
     webrtc::PeerConnectionInterface::IceServer server;
 
 
@@ -95,6 +89,8 @@ bool Conductor::CreatePeerConnection(bool dtls) {
     //config.servers.push_back(server);
 
     peer_connection_ = peer_connection_factory_->CreatePeerConnection(config, nullptr, nullptr, this);
+
+    AddTracks();
     return peer_connection_ != nullptr;
 }
 void Conductor::AddTracks() {  //“Ù ”∆µ≤Ÿøÿ
@@ -142,6 +138,11 @@ void Conductor::createDataChannel() {
     //rtc::scoped_refptr<DesktopCtrlDataChannelObserver> observer = new rtc::RefCountedObject<DesktopCtrlDataChannelObserver>();
     //DesktopCtrlDataChannelObserver* observer = new DesktopCtrlDataChannelObserver();
     //observer->SetDataChannel(data_channel);
+    if (data_channel_) {
+        std::cout << "closeDataChannel" << std::endl;
+        data_channel_->Close();
+        data_channel_->RegisterObserver(nullptr);
+    }
     std::cout << "createDataChannel" << std::endl;
     webrtc::DataChannelInit dataChannelInit;
     data_channel_ = peer_connection_->CreateDataChannel("sendDataChannel", &dataChannelInit);

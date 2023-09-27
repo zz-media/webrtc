@@ -12,7 +12,7 @@ public:
 public:
     ~Conductor();
     bool InitializePeerConnection();
-    bool CreatePeerConnection(bool dtls);
+    bool CreatePeerConnection();
     void AddTracks();
     void createDataChannel();
 
