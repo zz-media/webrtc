@@ -685,6 +685,15 @@ public class CallActivity extends AppCompatActivity {
                     onRemoteAnswerReceived(message);
                 } else if (type.equals("candidate")) {
                     onRemoteCandidateReceived(message);
+                } else if (type.equals("need_offer")) {
+                    logcatOnUI("Remote need_offer: ");
+                    if (mState.equals("joined_unbind")) {
+                        if (mPeerConnection == null) {
+                            mPeerConnection = createPeerConnection();
+                        }
+                    }
+                    mState = "joined_conn";
+                    createOffer();
                 } else {
                     Log.w(TAG, "the type is invalid: " + type);
                 }
