@@ -129,22 +129,11 @@ public class CallActivity extends AppCompatActivity {
 
 
         if(captureMode==0){//捕获摄像头
-            mVideoCapturer = createVideoCapturer();
-            mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
-            VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
-            mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
-            mVideoTrack = mPeerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
-            mVideoTrack.setEnabled(true);
-            mVideoTrack.addSink(mLocalSurfaceView);
-
-            AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
-            mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
-            mAudioTrack.setEnabled(true);
-
+            addCameraTracks();
             SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
             SignalClient.getInstance().joinRoom(mServerAddr, mRoomName);
         }else{//捕获屏幕
-            createScreenCapturer();
+            createScreenCapturerPermission();
         }
 
     }
@@ -153,25 +142,7 @@ public class CallActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Logging.d(TAG, "onActivityResult "+requestCode+" "+resultCode +" "+intent);
         if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
-            mVideoCapturer = new ScreenCapturerAndroid(intent, new MediaProjection.Callback() {
-                @Override
-                public void onStop() {
-                    super.onStop();
-                }
-            });
-
-            mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
-            VideoSource videoSource = mPeerConnectionFactory.createVideoSource(true);
-            mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
-
-            mVideoTrack = mPeerConnectionFactory.createVideoTrack("videoTrack", videoSource);
-            mVideoTrack.setEnabled(true);
-            mVideoTrack.addSink(mLocalSurfaceView);
-
-            AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
-            mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
-            mAudioTrack.setEnabled(true);
-
+            addScreenTracks(intent);
             SignalClient.getInstance().setSignalEventListener(mOnSignalEventListener);
             SignalClient.getInstance().joinRoom(mServerAddr, mRoomName);
         }
@@ -392,8 +363,42 @@ public class CallActivity extends AppCompatActivity {
 
         return builder.createPeerConnectionFactory();
     }
+    private void addCameraTracks(){
+        mVideoCapturer = createVideoCapturer();
+        mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
+        VideoSource videoSource = mPeerConnectionFactory.createVideoSource(false);
+        mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+        mVideoTrack = mPeerConnectionFactory.createVideoTrack(VIDEO_TRACK_ID, videoSource);
+        mVideoTrack.setEnabled(true);
+        mVideoTrack.addSink(mLocalSurfaceView);
 
-    private VideoCapturer createScreenCapturer(){
+        AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
+        mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
+        mAudioTrack.setEnabled(true);
+    }
+
+    private void addScreenTracks(Intent intent){
+        mVideoCapturer = new ScreenCapturerAndroid(intent, new MediaProjection.Callback() {
+            @Override
+            public void onStop() {
+                super.onStop();
+            }
+        });
+
+        mSurfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", mRootEglBase.getEglBaseContext());
+        VideoSource videoSource = mPeerConnectionFactory.createVideoSource(true);
+        mVideoCapturer.initialize(mSurfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+
+        mVideoTrack = mPeerConnectionFactory.createVideoTrack("videoTrack", videoSource);
+        mVideoTrack.setEnabled(true);
+        mVideoTrack.addSink(mLocalSurfaceView);
+
+        AudioSource audioSource = mPeerConnectionFactory.createAudioSource(new MediaConstraints());
+        mAudioTrack = mPeerConnectionFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
+        mAudioTrack.setEnabled(true);
+    }
+
+    private VideoCapturer createScreenCapturerPermission(){
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // 获取MediaProjectionManager对象

@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         final RadioGroup captureRradioGroup = findViewById(R.id.captureRradioGroup);
 //        serverEditText.setText("stun.l.google.com:19302");
         //serverEditText.setText("http://10.52.8.25");
-        serverEditText.setText("http://10.52.8.25:19000");
+        serverEditText.setText("http://10.52.8.25");
         //serverEditText.setText("http://124.220.1.36:19000");
         roomEditText.setText("rooma");
         findViewById(R.id.JoinRoomBtn).setOnClickListener(new View.OnClickListener() {
