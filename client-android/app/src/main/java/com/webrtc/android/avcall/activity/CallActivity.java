@@ -335,11 +335,13 @@ public class CallActivity extends AppCompatActivity {
         connection.addTrack(mVideoTrack, mediaStreamLabels);
         connection.addTrack(mAudioTrack, mediaStreamLabels);
 
-        DataChannel.Init init = new DataChannel.Init();
-        mDataChannel = connection.createDataChannel("sendDataChannel", init);
-        mDataChannel.registerObserver(mDataChannelObserver);
-
         return connection;
+    }
+
+    public void createDataChannel(){
+        DataChannel.Init init = new DataChannel.Init();
+        mDataChannel = mPeerConnection.createDataChannel("sendDataChannel", init);
+        mDataChannel.registerObserver(mDataChannelObserver);
     }
 
     public PeerConnectionFactory createPeerConnectionFactory(Context context) {
@@ -621,6 +623,7 @@ public class CallActivity extends AppCompatActivity {
 
             mState = "joined_conn";
             //调用call， 进行媒体协商
+            createDataChannel();
             createOffer();
         }
 
@@ -693,6 +696,7 @@ public class CallActivity extends AppCompatActivity {
                         }
                     }
                     mState = "joined_conn";
+                    createDataChannel();
                     createOffer();
                 } else {
                     Log.w(TAG, "the type is invalid: " + type);
