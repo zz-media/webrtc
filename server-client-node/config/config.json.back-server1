@@ -8,7 +8,7 @@
                 "urls":["stun:stun.l.google.com:19302"]
             },
             {
-                "urls":["turn:rtctest.zdomain.top:3478"],
+                "urls":["turn:ruijie.asia:3478"],
                 "credential":"123456",
                 "username":"admin"
             }

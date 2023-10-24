@@ -38,7 +38,7 @@ export default {
       videoHeight:720,
       wsUrl: "wss://localhost:8843",
       roomId: "room-multi",
-      pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
+      pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
       socket: null,
       pc: null,
       pcDataChannel: null,
@@ -218,6 +218,7 @@ export default {
       console.log('create RTCPeerConnection!',this.pcConfig);
       this.pc = new RTCPeerConnection(this.pcConfig);
       this.pc.onicecandidate = (e)=>{
+        //console.log("onicecandidate",e);
         if(e.candidate) {
           this.sendMessage(this.roomId, {
             type: 'candidate',

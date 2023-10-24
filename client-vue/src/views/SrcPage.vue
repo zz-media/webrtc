@@ -71,9 +71,10 @@ export default {
       wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
       roomId: "room1",
       //relayUrl: "turn:linux.zdomain.top:3478",
-      relayUrl: "turn:172.26.180.229:3478",
+      //relayUrl: "turn:172.26.180.229:3478",
       //pcConfig: {"iceServers":[{"urls":["stun:stun.l.google.com:19302"]},{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
-      pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"1756976278:user1","credential":"w8PP6hldSaWwxGnWnPnnt9m6h6Y="}],"iceTransportPolicy":"all"},
+      //pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"1756976278:user1","credential":"w8PP6hldSaWwxGnWnPnnt9m6h6Y="}],"iceTransportPolicy":"all"},
+      pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
 
       timeNum: 0
     };
@@ -155,7 +156,7 @@ export default {
 
       // window.stream = stream;
       // videoplay.srcObject = stream;
-      this.pcConfig.iceServers[0].urls = [this.relayUrl];
+      //this.pcConfig.iceServers[0].urls = [this.relayUrl];
       var config = {
         wsUrl: this.wsUrl,
         roomId: this.roomId,

@@ -19,3 +19,6 @@ npm run test
 
 ## 打包相关脚本
   在根目录下直接执行 npm run pack
+
+## turn 测试
+https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
