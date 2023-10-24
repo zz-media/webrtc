@@ -496,7 +496,7 @@ function createPeerConnection(){
 			}
 		};		
 	}else {
-		console.warning('the pc have be created!');
+		console.log('the pc have be created!');
 	}
 
 	return;	
@@ -616,10 +616,14 @@ function leave() {
 	if(socket){
 		socket.emit('leave', roomid); //notify server
 	}
-	pcDataChannel.close();
-	pcDataChannel = null;
-	pcFileChannel.close();
-	pcFileChannel = null;	
+	if(pcDataChannel!=null){
+		pcDataChannel.close();
+		pcDataChannel = null;
+	}
+	if(pcFileChannel!=null){
+		pcFileChannel.close();
+		pcFileChannel = null;	
+	}
 
 	hangup();
 	closeLocalMedia();
