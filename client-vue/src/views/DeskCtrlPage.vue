@@ -35,7 +35,7 @@
       <el-button @click="localStreamChange">切源</el-button>
     </div>
     <div>
-      <el-checkbox true-label="relay" false-label="all" v-model="pcConfig.iceTransportPolicy">强制使用中继服务器</el-checkbox>
+      <el-checkbox true-label="relay" false-label="all" v-model="pcConfig.iceTransportPolicy">只使用中继服务器</el-checkbox>
       socket地址：<input v-model="wsUrl"/>
       socket房间：<input v-model="roomId"/>
       chrome://webrtc-internals/    
@@ -86,7 +86,8 @@ export default {
       //relayUrl: "turn:linux.zdomain.top:3478",
       relayUrl: "turn:172.26.180.229:3478",
       //pcConfig: {"iceServers":[{"urls":["stun:stun.l.google.com:19302"]},{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
-      pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"1756976278:user1","credential":"w8PP6hldSaWwxGnWnPnnt9m6h6Y="}],"iceTransportPolicy":"all"},
+      //pcConfig: {"iceServers":[{"urls":["turn:rtctest.zdomain.top:3478"],"username":"1756976278:user1","credential":"w8PP6hldSaWwxGnWnPnnt9m6h6Y="}],"iceTransportPolicy":"all"},
+      pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
     };
   },
   mounted:function(){

@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     start(config) {
-      //console.log("startzz",config);
+      console.log("start config",config);
       this.wsUrl = config.wsUrl;
       this.roomId = config.roomId;
       this.pcConfig = config.pcConfig;
