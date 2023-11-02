@@ -252,9 +252,9 @@ function conn(){
 
 	socket.on('leaved', (roomid, id) => {
 		console.log('receive leaved message', roomid, id);
-		state='leaved'
+		state='leaved';
+		hangup();
 		socket.disconnect();
-		console.log('receive leaved message, state=', state);
 
 		btnConn.disabled = false;
 		btnLeave.disabled = true;
@@ -276,14 +276,12 @@ function conn(){
 	});
 
 	socket.on('disconnect', (socket) => {
+		hangup();
 		console.log('receive disconnect message!', roomid);
 		if(!(state === 'leaved')){
-			hangup();
 			closeLocalMedia();
-
 		}
 		state = 'leaved';
-	
 	});
 
 	socket.on('message', (roomid, data) => {
@@ -590,11 +588,16 @@ function call2(){
 }
 
 function hangup(){
-
+	if(pcDataChannel!=null){
+		pcDataChannel.close();
+		pcDataChannel = null;
+	}
+	if(pcFileChannel!=null){
+		pcFileChannel.close();
+		pcFileChannel = null;	
+	}
 	if(pc) {
-
 		offerdesc = null;
-		
 		pc.close();
 		pc = null;
 	}
@@ -616,15 +619,6 @@ function leave() {
 	if(socket){
 		socket.emit('leave', roomid); //notify server
 	}
-	if(pcDataChannel!=null){
-		pcDataChannel.close();
-		pcDataChannel = null;
-	}
-	if(pcFileChannel!=null){
-		pcFileChannel.close();
-		pcFileChannel = null;	
-	}
-
 	hangup();
 	closeLocalMedia();
 
