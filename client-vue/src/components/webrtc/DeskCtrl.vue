@@ -190,30 +190,6 @@ export default {
     stop() {
 
     },
-    localStreamChange(stream){//https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/removeTrack
-      this.localStream = stream;
-      this.$refs.localVideo.srcObject = stream;
-
-      const senders = this.pc.getSenders();
-      senders.forEach((sender) => {
-        //this.pc.removeTrack(sender)
-        console.log("sender",sender);
-        if(sender.track!=null && sender.track.kind=='video'){
-          console.log("sender.track.kind video");
-          stream.getTracks().forEach((track)=>{
-            //this.pc.addTrack(track, this.localStream);
-            if(track!=null && track.kind=='video'){
-              console.log("this.pc addTrack",track);
-              sender.replaceTrack(track);
-            }	           
-          });
-        }
-      }); 
-    },
-    sizeChange(videoWidth,videoHeight){
-      this.videoWidth = videoWidth;
-      this.videoHeight = videoHeight;
-    },
     createPeerConnection() {
       console.log('create RTCPeerConnection!',this.pcConfig);
       this.pc = new RTCPeerConnection(this.pcConfig);
