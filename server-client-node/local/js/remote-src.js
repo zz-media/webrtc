@@ -226,15 +226,15 @@ function conn(){
 			createPeerConnection();
 			bindTracks();
 		}
-		pcDataChannel = pc.createDataChannel('sendDataChannel');
-		pcDataChannel.onmessage = onReceiveMessage;
-		pcDataChannel.onopen = onReceiveChannelStateChange;
-		pcDataChannel.onclose = onReceiveChannelStateChange;		
+		// pcDataChannel = pc.createDataChannel('sendDataChannel');
+		// pcDataChannel.onmessage = onReceiveMessage;
+		// pcDataChannel.onopen = onReceiveChannelStateChange;
+		// pcDataChannel.onclose = onReceiveChannelStateChange;		
 
-		pcFileChannel = pc.createDataChannel('pcFileChannel');
-		pcFileChannel.onmessage = onReceiveMessageFile;
-		pcFileChannel.onopen = onReceiveChannelStateChangeFile;
-		pcFileChannel.onclose = onReceiveChannelStateChangeFile;			
+		// pcFileChannel = pc.createDataChannel('pcFileChannel');
+		// pcFileChannel.onmessage = onReceiveMessageFile;
+		// pcFileChannel.onopen = onReceiveChannelStateChangeFile;
+		// pcFileChannel.onclose = onReceiveChannelStateChangeFile;			
 
 		state = 'joined_conn';
 		call();	
@@ -449,10 +449,6 @@ function getOffer(desc){
 }
 
 function createPeerConnection(){
-
-	//如果是多人的话，在这里要创建一个新的连接.
-	//新创建好的要放到一个map表中。
-	//key=userid, value=peerconnection
 	console.log('create RTCPeerConnection!');
 	if(!pc){
 		if(document.querySelector('#useRelay').checked){
@@ -463,7 +459,6 @@ function createPeerConnection(){
 		console.log("pcConfig",pcConfig);		
 		pc = new RTCPeerConnection(pcConfig);
 		pc.onicecandidate = (e)=>{
-
 			if(e.candidate) {
 				sendMessage(roomid, {
 					type: 'candidate',
@@ -475,24 +470,32 @@ function createPeerConnection(){
 				console.log('this is the end candidate');
 			}
 		}
-
 		//pc.ontrack = getRemoteStream;
-
 		//pc.createDataChannel('sendDataChannel');
-		pc.ondatachannel = (event) => {
-			console.log("pc.ondatachannel",event);
-			if(event.channel.label=="sendDataChannel" && !pcDataChannel){
-				pcDataChannel = event.channel;
-				pcDataChannel.onmessage = onReceiveMessage;
-				pcDataChannel.onopen = onReceiveChannelStateChange;
-				pcDataChannel.onclose = onReceiveChannelStateChange;
-			}else if(event.channel.label=="pcFileChannel" && !pcFileChannel){
-				pcFileChannel = event.channel;
-				pcFileChannel.onmessage = onReceiveMessageFile;
-				pcFileChannel.onopen = onReceiveChannelStateChangeFile;
-				pcFileChannel.onclose = onReceiveChannelStateChangeFile;	
-			}
-		};		
+		pcDataChannel = pc.createDataChannel('sendDataChannel');
+		pcDataChannel.onmessage = onReceiveMessage;
+		pcDataChannel.onopen = onReceiveChannelStateChange;
+		pcDataChannel.onclose = onReceiveChannelStateChange;		
+
+		pcFileChannel = pc.createDataChannel('pcFileChannel');
+		pcFileChannel.onmessage = onReceiveMessageFile;
+		pcFileChannel.onopen = onReceiveChannelStateChangeFile;
+		pcFileChannel.onclose = onReceiveChannelStateChangeFile;
+
+		// pc.ondatachannel = (event) => {
+		// 	console.log("pc.ondatachannel",event);
+		// 	if(event.channel.label=="sendDataChannel" && !pcDataChannel){
+		// 		pcDataChannel = event.channel;
+		// 		pcDataChannel.onmessage = onReceiveMessage;
+		// 		pcDataChannel.onopen = onReceiveChannelStateChange;
+		// 		pcDataChannel.onclose = onReceiveChannelStateChange;
+		// 	}else if(event.channel.label=="pcFileChannel" && !pcFileChannel){
+		// 		pcFileChannel = event.channel;
+		// 		pcFileChannel.onmessage = onReceiveMessageFile;
+		// 		pcFileChannel.onopen = onReceiveChannelStateChangeFile;
+		// 		pcFileChannel.onclose = onReceiveChannelStateChangeFile;	
+		// 	}
+		// };		
 	}else {
 		console.log('the pc have be created!');
 	}
