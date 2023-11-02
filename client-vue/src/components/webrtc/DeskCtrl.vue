@@ -91,14 +91,17 @@ export default {
       });
       this.socket.on('leaved', (roomid, id) => {
         console.log('receive leaved message', roomid, id);
+        this.hangup();
         this.socket.disconnect();
       });  
       this.socket.on('bye', (roomid, id) => {
         console.log('receive bye message', roomid, id);
+        this.hangup();
+        //this.socket.disconnect();
       });  
       this.socket.on('disconnect', (socket) => {
         console.log('receive disconnect message!',socket);
-        this.stop();
+        this.hangup();
       });                         
       this.socket.on('message', (roomid, data) => {
         console.log('receive message!', roomid, data);
@@ -188,7 +191,7 @@ export default {
       },1000);
     },
     stop() {
-      console.log("stop");
+      console.log("stop",this.socket);
       //       wsUrl: null,
       // roomId: null,
       // pcConfig: null,
@@ -200,11 +203,19 @@ export default {
       // localStream: null,
       // timeInterval: null,
       if(this.socket){
-        this.socket.emit('leave', this.roomid); //notify server
+        this.socket.emit('leave', this.roomId); //notify server
       }
+      this.hangup();
+    },
+    hangup(){
+      console.log("hangup");
       if(this.pcDataChannel!=null){
         this.pcDataChannel.close();
         this.pcDataChannel = null;
+      }
+      if(this.pc) {
+        this.pc.close();
+        this.pc = null;
       }      
     },
     createPeerConnection() {
@@ -301,8 +312,10 @@ export default {
       console.log("收到事件数据",event.data);	
     },
     onReceiveChannelStateChange(event) {
-      var readyState = this.pcDataChannel.readyState;
-      console.log("onReceiveChannelStateChange",event,readyState);
+      if(this.pcDataChannel!=null){
+        var readyState = this.pcDataChannel.readyState;
+        console.log("onReceiveChannelStateChange",event,readyState);
+      }
     }  
   }
 }
