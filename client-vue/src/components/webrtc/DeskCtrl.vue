@@ -18,8 +18,6 @@
       <div ref="localVideoDiv" v-show="localStream!=null" class="localVideoDiv" @mousedown="move($event)">
         <video ref="localVideo" class="localVideo" autoplay muted playsinline></video>
       </div>
-      <!-- <video id="remote-video" style="max-height:400px;background-color:gainsboro;"  autoplay></video> -->
-      <!-- <video id="remote-video" style="height:840;width:1600;background-color:gainsboro;"  autoplay></video> -->
       <video ref="remoteVideo" class="remoteVideo" autoplay playsinline></video>
   </div>
 </template>
@@ -36,14 +34,13 @@ export default {
     return {
       videoWidth:1280,
       videoHeight:720,
-      wsUrl: "wss://localhost:8843",
-      roomId: "room-multi",
-      pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
+      wsUrl: null,
+      roomId: null,
+      pcConfig: null,
       socket: null,
       pc: null,
       pcDataChannel: null,
       sender: null,
-      srcSocketId: null,
       remoteStream: null,
       localStream: null,
       timeInterval: null,
@@ -94,12 +91,14 @@ export default {
       });
       this.socket.on('leaved', (roomid, id) => {
         console.log('receive leaved message', roomid, id);
+        this.socket.disconnect();
       });  
       this.socket.on('bye', (roomid, id) => {
         console.log('receive bye message', roomid, id);
       });  
       this.socket.on('disconnect', (socket) => {
         console.log('receive disconnect message!',socket);
+        this.stop();
       });                         
       this.socket.on('message', (roomid, data) => {
         console.log('receive message!', roomid, data);
@@ -138,8 +137,9 @@ export default {
       });      
 
       this.socket.emit('join', this.roomId);
+      //监控
       this.startInterval();
-
+      //键鼠事件
       mouseListener.init(this.$refs.remoteVideo,this.ctrlCallback);
     },
     startInterval(){
@@ -188,7 +188,24 @@ export default {
       },1000);
     },
     stop() {
-
+      console.log("stop");
+      //       wsUrl: null,
+      // roomId: null,
+      // pcConfig: null,
+      // socket: null,
+      // pc: null,
+      // pcDataChannel: null,
+      // sender: null,
+      // remoteStream: null,
+      // localStream: null,
+      // timeInterval: null,
+      if(this.socket){
+        this.socket.emit('leave', this.roomid); //notify server
+      }
+      if(this.pcDataChannel!=null){
+        this.pcDataChannel.close();
+        this.pcDataChannel = null;
+      }      
     },
     createPeerConnection() {
       console.log('create RTCPeerConnection!',this.pcConfig);
@@ -240,28 +257,12 @@ export default {
 	    console.error('Failed to create answer:', err);
     },
     sendMessage(roomid,data){
-      // if(!this.socket){
-      //   console.error('sendMessage socket is null');
-      //   return;
-      // }
-      // var header = {"roomId":roomid,"toSocketId":this.srcSocketId};
-      // console.log('send message to other end', JSON.stringify(header), JSON.stringify(data));
-      // this.socket.emit('msg', JSON.stringify(header), JSON.stringify(data));
       console.log('send message to other end', roomid, data);
       if(!this.socket){
         console.log('socket is null');
       }
       this.socket.emit('message', roomid, data);      
     },    
-    // sendMessage(roomid,data){
-    //   if(!this.socket){
-    //     console.error('sendMessage socket is null');
-    //     return;
-    //   }
-    //   var header = {"roomId":roomid,"toSocketId":this.srcSocketId};
-    //   console.log('send message to other end', JSON.stringify(header), JSON.stringify(data));
-    //   this.socket.emit('msg', JSON.stringify(header), JSON.stringify(data));
-    // },
     ctrlCallback(data){
       //console.log("ctrlCallback",data);
       if(this.pcDataChannel!=null && this.pcDataChannel.readyState=='open'){

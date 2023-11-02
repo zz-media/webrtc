@@ -3,9 +3,9 @@
     <div>
       socket地址：<input v-model="wsUrl"/>
       socket房间：<input v-model="roomId"/>
-      <el-checkbox true-label="relay" false-label="all" v-model="pcConfig.iceTransportPolicy">只使用中继协商</el-checkbox>
+      只使用中继<el-checkbox true-label="relay" false-label="all" v-model="pcConfig.iceTransportPolicy"></el-checkbox>
       <button @click="start">启动</button>
-      <button disabled>关闭</button>	      
+      <button @click="stop">关闭</button>
       chrome://webrtc-internals/    
     </div>
     <remote-des ref="RemoteDes"></remote-des>
@@ -28,7 +28,7 @@ export default {
       wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
       roomId: "room1",//test-multi room-multi
       //pcConfig: {"iceServers":[{"urls":["stun:stun.l.google.com:19302"]},{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
-      pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
+      pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:5349"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
     };
   },
   mounted:function(){
@@ -46,6 +46,9 @@ export default {
       //console.log("start=",config);
       this.$refs.RemoteDes.start(config);
     },
+    stop(){
+      this.$refs.RemoteDes.stop();
+    }
   }
 }
 </script>
