@@ -1,25 +1,30 @@
+function transforCoordinate(domWidth,domHeight,x,y){
+	return {x:x?(x/domWidth).toFixed(5):0,y:y?(y/domHeight).toFixed(5):0};
+}
 function init(dom,ctrlCallback) {
 	//console.log("dom",dom);
 	var inDom = false;
+	var domWidth = dom.clientWidth;
+	var domHeight = dom.clientHeight;
 	dom.onmouseenter = (e)=> {
 		inDom = true;
-		console.log("进入dom 范围")
+		console.log("进入dom 范围",domWidth,domHeight);
 	}
 	dom.onmouseleave = (e)=> {
 		inDom = false;
-		console.log("离开 dom 范围")
+		console.log("离开 dom 范围");
 	}
 	dom.onmousedown = (e)=> {
 		let data = null;
 		if(e.button == 1){
 			console.log("down鼠标中键",e);
-			data = {"event":"middleMouseDown","x":e.offsetX+"","y":e.offsetY+""};
+			data = {"event":"middleMouseDown"};
 		}else if(e.button == 2){
 			console.log("down鼠标右键",e);
-			data = {"event":"rightMouseDown","x":e.offsetX+"","y":e.offsetY+""};
+			data = {"event":"rightMouseDown"};
 		}else{
 			console.log("down鼠标左键",e);
-			data = {"event":"leftMouseDown","x":e.offsetX+"","y":e.offsetY+""};
+			data = {"event":"leftMouseDown"};
 		}
 		ctrlCallback(data);
 	}
@@ -27,20 +32,22 @@ function init(dom,ctrlCallback) {
 		let data = null;
 		if(e.button == 1){
 			console.log("up鼠标中键",e);
-			data = {"event":"middleMouseUp","x":e.offsetX+"","y":e.offsetY+""};
+			data = {"event":"middleMouseUp"};
 		}else if(e.button == 2){
 			console.log("up鼠标右键",e);
-			data = {"event":"rightMouseUp","x":e.offsetX+"","y":e.offsetY+""};
+			data = {"event":"rightMouseUp"};
 		}else{
 			console.log("up鼠标左键",e);
-			data = {"event":"leftMouseUp","x":e.offsetX+"","y":e.offsetY+""};
+			data = {"event":"leftMouseUp"};
 		}
 		ctrlCallback(data);
 	}	
 	dom.onmousemove = (e)=> {
 		//console.log("mouseMove",e);
-		//var coorData = {x:x?(x/_this.w).toFixed(5):0,y:y?(y/_this.h).toFixed(5):0}
-		let data={"event":"mousemove","x":e.offsetX+"","y":e.offsetY+""};
+		var coorData = transforCoordinate(domWidth,domHeight,e.offsetX,e.offsetY);
+		//console.log("coorData",coorData);
+		//let data={"event":"mousemove","x":e.offsetX,"y":e.offsetY};
+		let data={"event":"mousemove","x":coorData.x,"y":coorData.y};
 		ctrlCallback(data);
 	}
 	dom.onmousewheel = (e)=> {
@@ -51,9 +58,8 @@ function init(dom,ctrlCallback) {
 			e.stopPropagation();
 		}
 		console.log("mousewheel",e);
-		var x = 0;
         var y = e.wheelDelta;
-        let data={"event":"mousewheel","x":x,"y":y};
+        let data={"event":"mousewheel","y":y};
 		ctrlCallback(data);
 	}
 	dom.onclick = (e)=> {
