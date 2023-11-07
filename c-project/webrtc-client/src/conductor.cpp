@@ -151,6 +151,23 @@ void Conductor::createDataChannel() {
     data_channel_->RegisterObserver(this);
 }
 
+void Conductor::DeletePeerConnection() {
+    std::cout << "DeletePeerConnection" << std::endl;
+    if (data_channel_) {
+        data_channel_->Close();
+        data_channel_ = nullptr;
+    }
+    if (peer_connection_) {
+        peer_connection_->Close();
+        peer_connection_ = nullptr;
+    }
+    //if (peer_connection_factory_) {
+    //    peer_connection_factory_->Release();
+    //    peer_connection_factory_ = nullptr;
+    //}
+
+}
+
 void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket, std::string roomId) {
     //RTC_LOG(INFO) << "initSocketio";
     std::cout << "initSocketio" << std::endl;
@@ -297,6 +314,9 @@ void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
 
 void Conductor::OnStateChange() {
     printf("OnStateChange\n");
+    if (!data_channel_) {
+        return;
+    }
     webrtc::DataChannelInterface::DataState state = data_channel_->state();
 
     switch (state) {

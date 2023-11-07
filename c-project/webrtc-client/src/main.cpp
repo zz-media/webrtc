@@ -98,7 +98,7 @@ int main(int argc, const char* args[])
     current_socket->on("bye", sio::socket::event_listener_aux([&](string const& name, message::ptr const& data, bool isAck, message::ptr& ack_resp) {
         _lock.lock();
         std::cout << "bye" << std::endl;
-
+        //conductor->DeletePeerConnection();
         _lock.unlock();
 
     }));
