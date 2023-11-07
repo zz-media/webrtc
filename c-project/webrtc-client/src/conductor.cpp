@@ -3,6 +3,7 @@
 #include "conductor.h"
 #include "MyCapturer.h"
 #include "MyScreenCapture.h"
+#include "DesktopCtrl.h"
 //#include "DesktopCtrlDataChannelObserver.h"
 
 #include "api/create_peerconnection_factory.h"
@@ -81,12 +82,12 @@ bool Conductor::CreatePeerConnection() {
     //turnserver
     server2.uri = "stun:stun.l.google.com:19302";
 
-    server.uri = "turn:rtctest.zdomain.top:3478";
+    server.uri = "turn:ruijie.asia:3478";
     server.username = "admin";
     server.password = "123456";
 
-    config.servers.push_back(server2);
-    //config.servers.push_back(server);
+    config.servers.push_back(server);
+    //config.servers.push_back(server2);
 
     peer_connection_ = peer_connection_factory_->CreatePeerConnection(config, nullptr, nullptr, this);
 
@@ -288,53 +289,10 @@ void Conductor::OnMessage(const webrtc::DataBuffer& buffer) {
     // 创建一个新的 char 数组，并复制数据
     char* data = new char[dataSize + 1]; // +1 用于 null 终止符
     std::memcpy(data, dataPtr, dataSize);
-
     // 添加 null 终止符
     data[dataSize] = '\0';
     printf("data=%s\n", data);
-
-    rapidjson::Document doc;
-    doc.Parse(data);
-    
-    if (doc.HasMember("event") && doc["event"].IsString()) {
-        std::string event = doc["event"].GetString();
-        if (event == "mousemove") {
-            std::string x = doc["x"].GetString();
-            std::string y = doc["y"].GetString();
-            float floatX = std::stof(x);
-            float floatY = std::stof(y);
-            int intX, intY;
-            if (floatX<1 && floatY<1) {
-                intX = 1920 * floatX;
-                intY = 1080 * floatY;
-            } else {
-                intX = 1 * floatX;
-                intY = 1 * floatY;
-            }
-
-            if (intX < 0) {
-                intX = 0;
-            }else if (intX > 1920) {
-                intX = 1920;
-            }
-            if (intY < 0) {
-                intY = 0;
-            }else if(intY > 1080){
-                intY = 1080;
-            }
-            std::cout << "event：" << event << ",x:" << intX << ",y:" << intY << std::endl;
-            //SetCursorPos(intX, intY);
-        }else if(event == "click"){
-            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-        }else if(event == "click"){
-            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-        }else if (event == "keyTap") {
-            int keyCode = doc["keyCode"].GetInt();
-            keybd_event(keyCode, 0, 0, 0);
-            keybd_event(keyCode, 0, KEYEVENTF_KEYUP, 0);
-        }
-
-    }
+    dealDsektopCtrlMessage(data);
 }
 
 void Conductor::OnStateChange() {
