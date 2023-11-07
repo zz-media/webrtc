@@ -3,11 +3,11 @@ function init(dom,ctrlCallback) {
 	var inDom = false;
 	dom.onmouseenter = (e)=> {
 		inDom = true;
-		//console.log("进入dom 范围")
+		console.log("进入dom 范围")
 	}
 	dom.onmouseleave = (e)=> {
 		inDom = false;
-		//console.log("离开 dom 范围")
+		console.log("离开 dom 范围")
 	}
 	dom.onmousedown = (e)=> {
 		console.log("mousedown",e);
@@ -16,6 +16,11 @@ function init(dom,ctrlCallback) {
 	dom.onmouseup = (e)=> {
 		console.log("onmouseup",e);
 	}
+	dom.onclick = (e)=> {
+		console.log("onclick",e);
+		let data={"event":"click","x":e.offsetX+"","y":e.offsetY+""};
+		ctrlCallback(data);
+	}		
 	dom.onmousemove = (e)=> {
 		//console.log("mouseMove",e);
 		//var coorData = {x:x?(x/_this.w).toFixed(5):0,y:y?(y/_this.h).toFixed(5):0}
@@ -30,6 +35,10 @@ function init(dom,ctrlCallback) {
 			e.stopPropagation();
 		}
 		console.log("mousewheel",e);
+		var x = 0;
+        var y = e.wheelDelta;
+        let data={"event":"mousewheel","x":x,"y":y};
+		ctrlCallback(data);
 	}
 	dom.oncontextmenu = (e)=> {
 		if (e.preventDefault){ 
@@ -42,7 +51,7 @@ function init(dom,ctrlCallback) {
 		let y = e.offsetY; 
 		let data = {"event":"contextmenu","x":x,"y":y};
 		console.log("oncontextmenu",data);	
-		//ctrlCallback(data);	
+		ctrlCallback(data);	
 	}
 	document.onkeydown = (e)=> {
 		if(!inDom){
