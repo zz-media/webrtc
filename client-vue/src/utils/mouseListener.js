@@ -17,7 +17,7 @@ function init(dom,ctrlCallback) {
 		console.log("onmouseup",e);
 	}
 	dom.onmousemove = (e)=> {
-		console.log("mouseMove",e);
+		//console.log("mouseMove",e);
 		//var coorData = {x:x?(x/_this.w).toFixed(5):0,y:y?(y/_this.h).toFixed(5):0}
 		let data={"event":"mousemove","x":e.offsetX+"","y":e.offsetY+""};
 		ctrlCallback(data);
@@ -48,7 +48,10 @@ function init(dom,ctrlCallback) {
 		if(!inDom){
 			return;
 		}
+		//event keyDown
+		let data={"event":"keyTap","key":e.key,"keyCode":e.keyCode};
 		console.log("keydown",e);
+		ctrlCallback(data);
 	}
 	document.onkeyup = (e)=> {
 		if(!inDom){
