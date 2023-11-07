@@ -9,18 +9,28 @@ void dealDsektopCtrlMessage(char* data) {
     }
     std::string event = doc["event"].GetString();
     if (event == "mousemove") {
-        std::string x = doc["x"].GetString();
-        std::string y = doc["y"].GetString();
-        float floatX = std::stof(x);
-        float floatY = std::stof(y);
+        double doubleX, doubleY;
+        if (doc["x"].IsString()) {
+            std::string x = doc["x"].GetString();
+            doubleX = std::stod(x);
+        } else {
+            doubleX = doc["x"].GetDouble();
+        }
+        if (doc["y"].IsString()) {
+            std::string y = doc["y"].GetString();
+            doubleY = std::stod(y);
+        } else {
+            doubleY = doc["y"].GetDouble();
+        }
+
         int intX, intY;
-        if (floatX < 1 && floatY < 1) {
-            intX = 1920 * floatX;
-            intY = 1080 * floatY;
+        if (doubleX < 1 && doubleY < 1) {
+            intX = 1920 * doubleX;
+            intY = 1080 * doubleY;
         }
         else {
-            intX = 1 * floatX;
-            intY = 1 * floatY;
+            intX = 1 * doubleX;
+            intY = 1 * doubleY;
         }
 
         if (intX < 0) {
