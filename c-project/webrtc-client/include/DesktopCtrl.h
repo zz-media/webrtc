@@ -38,15 +38,34 @@ void dealDsektopCtrlMessage(char* data) {
         std::cout << "event£º" << event << ",x:" << intX << ",y:" << intY << std::endl;
         SetCursorPos(intX, intY);
     }
-    else if (event == "click") {
-        mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+    else if (event == "leftMouseDown") {
+        mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
     }
-    else if (event == "click") {
-        mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+    else if (event == "leftMouseUp") {
+        mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
     }
-    else if (event == "keyTap") {
+    else if (event == "rightMouseDown") {
+        mouse_event(MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+    }
+    else if (event == "rightMouseUp") {
+        mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0);
+    }
+    else if (event == "middleMouseDown") {
+        mouse_event(MOUSEEVENTF_MIDDLEDOWN, 0, 0, 0, 0);
+    }
+    else if (event == "middleMouseUp") {
+        mouse_event(MOUSEEVENTF_MIDDLEUP, 0, 0, 0, 0);
+    }
+    else if (event == "mousewheel") {
+        int x = doc["y"].GetInt();
+        mouse_event(MOUSEEVENTF_WHEEL, 0, 0, x, 0);
+    }
+    else if (event == "keyDown") {
         int keyCode = doc["keyCode"].GetInt();
         keybd_event(keyCode, 0, 0, 0);
+    }
+    else if (event == "keyUp") {
+        int keyCode = doc["keyCode"].GetInt();
         keybd_event(keyCode, 0, KEYEVENTF_KEYUP, 0);
     }
 }
