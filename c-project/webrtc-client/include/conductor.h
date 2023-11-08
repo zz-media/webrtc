@@ -23,7 +23,7 @@ public:
     void getCandidate(const std::string& sdp, int sdp_mline_index, const std::string& sdp_mid);
 
     // PeerConnectionObserver implementation.
-    void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState new_state) override { std::cout << "OnSignalingChange" << std::endl; }
+    void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState new_state) override { std::cout << "OnSignalingChange:" << new_state << std::endl; }
     void OnAddTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver,const std::vector<rtc::scoped_refptr<webrtc::MediaStreamInterface>>& streams) override;
     void OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) override;
     void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> channel) override;

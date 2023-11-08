@@ -181,7 +181,7 @@ void Conductor::initSocketio(std::shared_ptr<sio::socket> current_socket, std::s
 void Conductor::createOffer() {
     std::cout << "Conductor::createOffer" << std::endl;
     peer_connection_->CreateOffer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
-    //std::cout << "void Conductor::createOffer success" << std::endl;
+    std::cout << "Conductor::createOffer success" << std::endl;
 }
 
 void Conductor::getAnswer(const std::string& sdp) {
