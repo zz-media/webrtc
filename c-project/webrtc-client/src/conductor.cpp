@@ -45,8 +45,8 @@ Conductor::~Conductor() {
 
 }
 
-bool Conductor::InitializePeerConnection() {
-	std::cout << "InitializePeerConnection" << std::endl;
+bool Conductor::InitializePeerFactory() {
+	std::cout << "InitializePeerFactory" << std::endl;
     //RTC_DCHECK(!peer_connection_factory_);
     //RTC_DCHECK(!peer_connection_);
 
@@ -63,12 +63,11 @@ bool Conductor::InitializePeerConnection() {
         //DeletePeerConnection();
         return false;
     }
-    if (!CreatePeerConnection()) {
-        //main_wnd_->MessageBox("Error", "CreatePeerConnection failed", true);
-        std::cout << "CreatePeerConnection failed" << std::endl;
-        //DeletePeerConnection();
-    }
-    return peer_connection_ != nullptr;
+    //if (!CreatePeerConnection()) {
+    //    std::cout << "CreatePeerConnection failed" << std::endl;
+    //    //DeletePeerConnection();
+    //}
+    return peer_connection_factory_ != nullptr;
 }
 bool Conductor::CreatePeerConnection() {
     std::cout << "CreatePeerConnection" << std::endl;
@@ -92,6 +91,7 @@ bool Conductor::CreatePeerConnection() {
     peer_connection_ = peer_connection_factory_->CreatePeerConnection(config, nullptr, nullptr, this);
 
     AddTracks();
+    createDataChannel();
     return peer_connection_ != nullptr;
 }
 void Conductor::AddTracks() {  //“Ù ”∆µ≤Ÿøÿ

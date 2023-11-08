@@ -11,7 +11,7 @@ public:
     Conductor();
 public:
     ~Conductor();
-    bool InitializePeerConnection();
+    bool InitializePeerFactory();
     bool CreatePeerConnection();
     void AddTracks();
     void createDataChannel();
