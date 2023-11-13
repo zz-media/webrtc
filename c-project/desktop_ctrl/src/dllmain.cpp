@@ -9,6 +9,18 @@ extern "C" __declspec(dllexport) int mouseMove(int x, int y) {
     return 0;
 }
 
+extern "C" __declspec(dllexport) int mouseSlide(int x, int y) {
+    // 获取当前鼠标位置
+    POINT currentPos;
+    GetCursorPos(&currentPos);
+    // 向右移动一个像素
+    currentPos.x += x;
+    currentPos.y += y;
+    // 设置新的鼠标位置
+    SetCursorPos(currentPos.x, currentPos.y);
+    return 0;
+}
+
 extern "C" __declspec(dllexport) int leftClick() {
     mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
     return 0;

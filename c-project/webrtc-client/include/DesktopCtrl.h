@@ -9,11 +9,14 @@ void dealDsektopCtrlMessage(char* data) {
     }
     std::string event = doc["event"].GetString();
     if (event == "mouseSlide") {
+        int intX = doc["x"].GetInt();
+        int intY = doc["y"].GetInt();
         // 获取当前鼠标位置
         POINT currentPos;
         GetCursorPos(&currentPos);
         // 向右移动一个像素
-        currentPos.x += 1;
+        currentPos.x += intX;
+        currentPos.y += intY;
         // 设置新的鼠标位置
         SetCursorPos(currentPos.x, currentPos.y);
     }else if (event == "mousemove") {
