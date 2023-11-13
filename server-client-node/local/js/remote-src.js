@@ -4,6 +4,7 @@ var desktop4Node = null;
 var desktop4Node = ffi.Library('../../dll/Desktop4Node.dll', {
 	'add': [ 'int', [ 'int', 'int' ] ],
 	'mouseMove': [ 'int', [ 'int', 'int' ] ],
+	'mouseSlide': [ 'int', [ 'int', 'int' ] ],
 	'leftClick': [ 'int', [ ] ],
 	'rightClick': [ 'int', [ ] ],
 	'dbClick': [ 'int', [ ] ],
@@ -145,6 +146,9 @@ function sendMessageRobot(roomid, data){
 
 				
 			}  
+			break;
+		case "mouseSlide" :
+			desktop4Node.mouseSlide(obj.x, obj.y);
 			break;
 		case "click" :
 			//robot.mouseClick();
