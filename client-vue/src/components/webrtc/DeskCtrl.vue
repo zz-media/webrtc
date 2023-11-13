@@ -35,7 +35,10 @@ export default {
       videoShowWidth:1280,
       videoShowHeight:720,
       videoWidth:0,
-      videoHeight:0,      
+      videoHeight:0,  
+      useMouseSlide: true,  
+      lastX: null,
+      lastY: null,  
       wsUrl: null,
       roomId: null,
       pcConfig: null,
@@ -62,6 +65,7 @@ export default {
   methods: {
     start(config) {
       console.log("start config",config);
+      this.useMouseSlide = config.useMouseSlide;
       this.wsUrl = config.wsUrl;
       this.roomId = config.roomId;
       this.pcConfig = config.pcConfig;
@@ -285,9 +289,26 @@ export default {
       this.socket.emit('message', roomid, data);      
     },    
     ctrlCallback(data){ 
-      if(data.event=="mousemove" && this.videoWidth!=this.videoShowWidth && this.videoHeight!=this.videoShowHeight){//画布坐标系转屏幕坐标系
+      if(data.event=="onmousemove" && !this.useMouseSlide && this.videoWidth!=this.videoShowWidth && this.videoHeight!=this.videoShowHeight){//画布坐标系转屏幕坐标系
+        data.event = "mousemove";
         data.x = parseInt(data.x * this.videoWidth / this.videoShowWidth);
         data.y = parseInt(data.y * this.videoHeight / this.videoShowHeight);
+      }
+      if(data.event=="onmousemove" && this.useMouseSlide){
+        data.event = "mouseSlide";
+        var nowX = parseInt(data.x * this.videoWidth / this.videoShowWidth);
+        var nowY = parseInt(data.y * this.videoHeight / this.videoShowHeight);
+        if(this.lastX == null || this.lastY ==null){
+          this.lastX = nowX;
+          this.lastY = nowY;
+          return;
+        }else{
+          data.x = nowX - this.lastX;
+          data.y = nowY - this.lastY;
+
+          this.lastX = nowX;
+          this.lastY = nowY;
+        }
       }
       console.log("ctrlCallback",data);
       if(this.pcDataChannel!=null && this.pcDataChannel.readyState=='open'){

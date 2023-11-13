@@ -4,6 +4,7 @@
       socket地址：<input v-model="wsUrl"/>
       socket房间：<input v-model="roomId"/>
       只使用中继<el-checkbox true-label="relay" false-label="all" v-model="pcConfig.iceTransportPolicy"></el-checkbox>
+      移动相对坐标系<el-checkbox v-model="useMouseSlide"></el-checkbox>
       <button @click="start">启动</button>
       <button @click="stop">关闭</button>
       chrome://webrtc-internals/    
@@ -26,9 +27,10 @@ export default {
   data() {
     return {
       wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
-      roomId: "roomc",//test-multi room-multi
+      roomId: "roomcc",//test-multi room-multi
       //pcConfig: {"iceServers":[{"urls":["stun:stun.l.google.com:19302"]},{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
       pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:5349"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
+      useMouseSlide : true
     };
   },
   mounted:function(){
@@ -42,6 +44,7 @@ export default {
         roomId:this.roomId,
         pcConfig:this.pcConfig,
         localStream: null,
+        useMouseSlide: this.useMouseSlide
       };
       //console.log("start=",config);
       this.$refs.RemoteDes.start(config);

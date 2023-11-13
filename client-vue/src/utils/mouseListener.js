@@ -47,7 +47,7 @@ function init(dom,ctrlCallback) {
 		//var coorData = transforCoordinate(domWidth,domHeight,e.offsetX,e.offsetY);
 		//console.log("coorData",coorData);
 		//let data={"event":"mousemove","x":e.offsetX,"y":e.offsetY};
-		let data={"event":"mousemove","x":e.offsetX,"y":e.offsetY};
+		let data={"event":"onmousemove","x":e.offsetX,"y":e.offsetY};
 		//console.log("onmousemove",data);
 		ctrlCallback(data);
 	}
