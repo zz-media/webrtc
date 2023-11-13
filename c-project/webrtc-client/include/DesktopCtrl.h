@@ -8,7 +8,15 @@ void dealDsektopCtrlMessage(char* data) {
         return;
     }
     std::string event = doc["event"].GetString();
-    if (event == "mousemove") {
+    if (event == "mouseSlide") {
+        // 获取当前鼠标位置
+        POINT currentPos;
+        GetCursorPos(&currentPos);
+        // 向右移动一个像素
+        currentPos.x += 1;
+        // 设置新的鼠标位置
+        SetCursorPos(currentPos.x, currentPos.y);
+    }else if (event == "mousemove") {
         double doubleX, doubleY;
         if (doc["x"].IsString()) {
             std::string x = doc["x"].GetString();

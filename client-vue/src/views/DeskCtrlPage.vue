@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       wsUrl: urlUtil.getProtocol()+"//"+urlUtil.getUrlDomain()+":"+urlUtil.getUrlPort(),
-      roomId: "room1",//test-multi room-multi
+      roomId: "roomc",//test-multi room-multi
       //pcConfig: {"iceServers":[{"urls":["stun:stun.l.google.com:19302"]},{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
       pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:5349"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
     };

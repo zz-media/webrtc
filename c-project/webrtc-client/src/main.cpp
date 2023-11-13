@@ -60,7 +60,7 @@ int main(int argc, const char* args[])
     rtc::scoped_refptr<Conductor> conductor(new rtc::RefCountedObject<Conductor>());
     conductor->InitializePeerFactory();
     conductor->CreatePeerConnection();
-    string roomId = "room1";
+    string roomId = "roomc";
 
     
     sio::client sioClient;
