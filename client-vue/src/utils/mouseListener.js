@@ -1,6 +1,6 @@
-function transforCoordinate(domWidth,domHeight,x,y){
-	return {x:x?(x/domWidth).toFixed(5):0,y:y?(y/domHeight).toFixed(5):0};
-}
+// function transforCoordinate(domWidth,domHeight,x,y){
+// 	return {x:x?(x/domWidth).toFixed(5):0,y:y?(y/domHeight).toFixed(5):0};
+// }
 function init(dom,ctrlCallback) {
 	//console.log("dom",dom);
 	var inDom = false;
@@ -44,10 +44,11 @@ function init(dom,ctrlCallback) {
 	}	
 	dom.onmousemove = (e)=> {
 		//console.log("mouseMove",e);
-		var coorData = transforCoordinate(domWidth,domHeight,e.offsetX,e.offsetY);
+		//var coorData = transforCoordinate(domWidth,domHeight,e.offsetX,e.offsetY);
 		//console.log("coorData",coorData);
 		//let data={"event":"mousemove","x":e.offsetX,"y":e.offsetY};
-		let data={"event":"mousemove","x":coorData.x,"y":coorData.y};
+		let data={"event":"mousemove","x":e.offsetX,"y":e.offsetY};
+		//console.log("onmousemove",data);
 		ctrlCallback(data);
 	}
 	dom.onmousewheel = (e)=> {

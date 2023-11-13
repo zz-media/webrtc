@@ -17,42 +17,8 @@ void dealDsektopCtrlMessage(char* data) {
         // 设置新的鼠标位置
         SetCursorPos(currentPos.x, currentPos.y);
     }else if (event == "mousemove") {
-        double doubleX, doubleY;
-        if (doc["x"].IsString()) {
-            std::string x = doc["x"].GetString();
-            doubleX = std::stod(x);
-        } else {
-            doubleX = doc["x"].GetDouble();
-        }
-        if (doc["y"].IsString()) {
-            std::string y = doc["y"].GetString();
-            doubleY = std::stod(y);
-        } else {
-            doubleY = doc["y"].GetDouble();
-        }
-
-        int intX, intY;
-        if (doubleX < 1 && doubleY < 1) {
-            intX = 1920 * doubleX;
-            intY = 1080 * doubleY;
-        }
-        else {
-            intX = 1 * doubleX;
-            intY = 1 * doubleY;
-        }
-
-        if (intX < 0) {
-            intX = 0;
-        }
-        else if (intX > 1920) {
-            intX = 1920;
-        }
-        if (intY < 0) {
-            intY = 0;
-        }
-        else if (intY > 1080) {
-            intY = 1080;
-        }
+        int intX = doc["x"].GetInt();
+        int intY = doc["y"].GetInt();
         std::cout << "event：" << event << ",x:" << intX << ",y:" << intY << std::endl;
         SetCursorPos(intX, intY);
     }

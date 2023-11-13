@@ -1,5 +1,5 @@
 <template>
-  <div class="videoDiv" :style="'width:'+videoWidth+'px;height:'+videoHeight+'px'">
+  <div class="videoDiv" :style="'width:'+videoShowWidth+'px;height:'+videoShowHeight+'px'">
       <div class="videoNav">
         decoderImp:{{reportCount.currentReport!=null?reportCount.currentReport.decoderImplementation:""}}<br/>
         bytes:{{reportCount.bytes}}<br/>
@@ -32,8 +32,10 @@ export default {
   },
   data() {
     return {
-      videoWidth:1280,
-      videoHeight:720,
+      videoShowWidth:1280,
+      videoShowHeight:720,
+      videoWidth:0,
+      videoHeight:0,      
       wsUrl: null,
       roomId: null,
       pcConfig: null,
@@ -238,7 +240,15 @@ export default {
       this.pc.ontrack = (e)=>{
         console.log("ontrack info",e);
         this.remoteStream = e.streams[0];
-        this.$refs.remoteVideo.srcObject = this.remoteStream;   
+        this.$refs.remoteVideo.srcObject = this.remoteStream;  
+        if (e.track.kind === 'video') {
+            // 等待视频元数据加载完成
+            this.$refs.remoteVideo.onloadedmetadata = ()=> {
+                console.log('远程视频大小：', this.$refs.remoteVideo.videoWidth, this.$refs.remoteVideo.videoHeight);
+                this.videoWidth = this.$refs.remoteVideo.videoWidth;
+                this.videoHeight = this.$refs.remoteVideo.videoHeight;
+            };
+        }         
       }
       this.pc.ondatachannel = (event) => {
         console.log("pc.ondatachannel",event,event.channel.label);
@@ -274,8 +284,12 @@ export default {
       }
       this.socket.emit('message', roomid, data);      
     },    
-    ctrlCallback(data){
-      //console.log("ctrlCallback",data);
+    ctrlCallback(data){ 
+      if(data.event=="mousemove" && this.videoWidth!=this.videoShowWidth && this.videoHeight!=this.videoShowHeight){//画布坐标系转屏幕坐标系
+        data.x = parseInt(data.x * this.videoWidth / this.videoShowWidth);
+        data.y = parseInt(data.y * this.videoHeight / this.videoShowHeight);
+      }
+      console.log("ctrlCallback",data);
       if(this.pcDataChannel!=null && this.pcDataChannel.readyState=='open'){
         console.log("发送的事件数据",JSON.stringify(data));
         this.pcDataChannel.send(JSON.stringify(data));
