@@ -5,6 +5,7 @@
       socket房间：<input v-model="roomId"/>
       只使用中继<el-checkbox true-label="relay" false-label="all" v-model="pcConfig.iceTransportPolicy"></el-checkbox>
       移动相对坐标系<el-checkbox v-model="useMouseSlide"></el-checkbox>
+      隐藏鼠标<el-checkbox v-model="hideMouse"></el-checkbox>
       <button @click="start">启动</button>
       <button @click="stop">关闭</button>
       chrome://webrtc-internals/    
@@ -30,7 +31,8 @@ export default {
       roomId: "roomcc",//test-multi room-multi
       //pcConfig: {"iceServers":[{"urls":["stun:stun.l.google.com:19302"]},{"urls":["turn:rtctest.zdomain.top:3478"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
       pcConfig: {"iceServers":[{"urls":["turn:ruijie.asia:5349"],"username":"admin","credential":"123456"}],"iceTransportPolicy":"all"},
-      useMouseSlide : true
+      useMouseSlide : false,
+      hideMouse:false
     };
   },
   mounted:function(){
@@ -44,7 +46,8 @@ export default {
         roomId:this.roomId,
         pcConfig:this.pcConfig,
         localStream: null,
-        useMouseSlide: this.useMouseSlide
+        useMouseSlide: this.useMouseSlide,
+        hideMouse:this.hideMouse
       };
       //console.log("start=",config);
       this.$refs.RemoteDes.start(config);

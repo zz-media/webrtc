@@ -18,7 +18,7 @@
       <div ref="localVideoDiv" v-show="localStream!=null" class="localVideoDiv" @mousedown="move($event)">
         <video ref="localVideo" class="localVideo" autoplay muted playsinline></video>
       </div>
-      <video ref="remoteVideo" class="remoteVideo" autoplay playsinline></video>
+      <video :style="hideMouse?'cursor:none':'cursor:auto'" ref="remoteVideo" class="remoteVideo" autoplay playsinline></video>
   </div>
 </template>
 
@@ -36,7 +36,8 @@ export default {
       videoShowHeight:720,
       videoWidth:0,
       videoHeight:0,  
-      useMouseSlide: true,  
+      useMouseSlide: false,  
+      hideMouse:false,
       lastX: null,
       lastY: null,  
       wsUrl: null,
@@ -66,6 +67,7 @@ export default {
     start(config) {
       console.log("start config",config);
       this.useMouseSlide = config.useMouseSlide;
+      this.hideMouse = config.hideMouse;
       this.wsUrl = config.wsUrl;
       this.roomId = config.roomId;
       this.pcConfig = config.pcConfig;
