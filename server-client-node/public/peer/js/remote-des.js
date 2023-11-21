@@ -295,7 +295,7 @@ function createPeerConnection(){
 				pcDataChannel.onmessage = onReceiveMessage;
 				pcDataChannel.onopen = onReceiveChannelStateChange;
 				pcDataChannel.onclose = onReceiveChannelStateChange;
-			}else if(event.channel.label=="pcFileChannel"){// && !pcFileChannel
+			}else if(event.channel.label=="fileDataChannel"){// && !pcFileChannel
 				pcFileChannel = event.channel;
 				pcFileChannel.onmessage = onReceiveMessageFile;
 				pcFileChannel.onopen = onReceiveChannelStateChangeFile;
@@ -402,7 +402,7 @@ function handleFileInputChange() {
 		lastModifyTime = file.lastModified;
 
 		sendMessage(roomid, {
-			type: 'fileinfo',
+			type: 'fileInfo',
 			name: file.name,
 			size: file.size,
 			filetype: file.type,

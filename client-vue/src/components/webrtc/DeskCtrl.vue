@@ -5,7 +5,7 @@
 					<input type="file" @change="handleFileChange" :disabled="fileDataChannel==null"/>
 					<button type="button" @click="handleFileSend" :disabled="fileDataChannel==null">发送</button>
 					<!-- <button type="button">中止</button>	 -->
-					<progress id="sendProgress" max="0" value="0"></progress>	
+					<progress :max="fileSize" :value="fileSendSize"></progress>	
 					<span id="status"></span>
 			</div>    
       <div class="videoNav">
@@ -70,6 +70,9 @@ export default {
       },
 
       fileDataChannel: null,
+      selectedFile:null,
+      fileSize:0,
+      fileSendSize:0,
     };
   },
   methods: {
@@ -272,7 +275,7 @@ export default {
           this.pcDataChannel.onmessage = this.onReceiveMessage;
           this.pcDataChannel.onopen = this.onReceiveChannelStateChange;
           this.pcDataChannel.onclose = this.onReceiveChannelStateChange;
-        }else if(event.channel.label=="pcFileChannel"){// && !pcFileChannel
+        }else if(event.channel.label=="fileDataChannel"){// && !pcFileChannel
           this.fileDataChannel = event.channel;
           this.fileDataChannel.onmessage = this.onReceiveMessageFile;
           this.fileDataChannel.onopen = this.onReceiveChannelStateChangeFile;
@@ -379,30 +382,69 @@ export default {
     },
     handleFileChange(event){
       // 获取选择的文件
-      const selectedFile = event.target.files[0];
+      this.selectedFile = event.target.files[0];
       // 处理文件，例如上传到服务器或进行其他操作
-      console.log('Selected File:', selectedFile);
-      if (!selectedFile) {
+      console.log('Selected File:', this.selectedFile);
+      if (!this.selectedFile) {
         console.log('No file chosen');
       } else {
         // fileName = selectedFile.name;
-        // fileSize = selectedFile.size;
+        this.fileSize = this.selectedFile.size;
         // fileType = selectedFile.type;
         // lastModifyTime = file.lastModified;
 
         this.sendMessage(this.roomId, {
-          type: 'fileinfo',
-          name: selectedFile.name,
-          size: selectedFile.size,
-          filetype: selectedFile.type,
-          lastmodify: selectedFile.lastModified
+          type: 'fileInfo',
+          name: this.selectedFile.name,
+          size: this.selectedFile.size,
+          filetype: this.selectedFile.type,
+          lastmodify: this.selectedFile.lastModified
         });
         // btnSendFile.disabled = false;
-        // sendProgress.value = 0;
+        this.fileSendSize = 0;
       }
     }, 
     handleFileSend(){
       console.log("handleFileSend");
+      var offset = 0;
+      var chunkSize = 16384;
+      var file = this.selectedFile;
+      //console.log(`File is ${[file.name, file.size, file.type, file.lastModified].join(' ')}`);
+
+      // Handle 0 size files.
+      //statusMessage.textContent = '';
+      //downloadAnchor.textContent = '';
+      if (file.size === 0) {
+        //bitrateDiv.innerHTML = '';
+        //statusMessage.textContent = 'File is empty, please select a non-empty file';
+        return;
+      }
+
+      //sendProgress.max = file.size;
+
+      var fileReader = new FileReader();
+      fileReader.onerror = error => console.error('Error reading file:', error);
+      fileReader.onabort = event => console.log('File reading aborted:', event);
+      fileReader.onload = e => {
+        console.log('FileRead.onload ', e);
+        this.fileDataChannel.send(e.target.result);
+        offset += e.target.result.byteLength;
+        this.fileSendSize = offset;
+        if (offset < file.size) {
+          readSlice(offset);
+          //btnAbort.disabled = false;
+        }else{
+          //btnAbort.disabled = true;
+        }
+      }
+
+      var readSlice = o => {
+        console.log('readSlice ', o);
+        const slice = file.slice(offset, o + chunkSize);
+        fileReader.readAsArrayBuffer(slice);
+      };
+
+      readSlice(0);      
     },   
   }
 }

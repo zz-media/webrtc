@@ -312,8 +312,8 @@ function conn(){
 		
 		}else if (data.hasOwnProperty('type') && data.type === 'need_offer'){
 			call2();
-		}else if(data.hasOwnProperty('type') && data.type === 'fileinfo'){
-			console.log('fileinfo',data);
+		}else if(data.hasOwnProperty('type') && data.type === 'fileInfo'){
+			console.log('fileInfo',data);
 			fileName = data.name;
 			fileType = data.filetype;
 			fileSize = data.size;
@@ -481,7 +481,7 @@ function createPeerConnection(){
 		pcDataChannel.onopen = onReceiveChannelStateChange;
 		pcDataChannel.onclose = onReceiveChannelStateChange;		
 
-		pcFileChannel = pc.createDataChannel('pcFileChannel');
+		pcFileChannel = pc.createDataChannel('fileDataChannel');
 		pcFileChannel.onmessage = onReceiveMessageFile;
 		pcFileChannel.onopen = onReceiveChannelStateChangeFile;
 		pcFileChannel.onclose = onReceiveChannelStateChangeFile;
