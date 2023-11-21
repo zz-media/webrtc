@@ -1,5 +1,13 @@
 <template>
   <div class="videoDiv" :style="'width:'+videoShowWidth+'px;height:'+videoShowHeight+'px'">
+			<div >
+					<label>文件传输</label>
+					<input type="file" @change="handleFileChange" :disabled="fileDataChannel==null"/>
+					<button type="button" @click="handleFileSend" :disabled="fileDataChannel==null">发送</button>
+					<!-- <button type="button">中止</button>	 -->
+					<progress id="sendProgress" max="0" value="0"></progress>	
+					<span id="status"></span>
+			</div>    
       <div class="videoNav">
         decoderImp:{{reportCount.currentReport!=null?reportCount.currentReport.decoderImplementation:""}}<br/>
         bytes:{{reportCount.bytes}}<br/>
@@ -61,6 +69,7 @@ export default {
         reportLocalCandidate: null
       },
 
+      fileDataChannel: null,
     };
   },
   methods: {
@@ -263,6 +272,11 @@ export default {
           this.pcDataChannel.onmessage = this.onReceiveMessage;
           this.pcDataChannel.onopen = this.onReceiveChannelStateChange;
           this.pcDataChannel.onclose = this.onReceiveChannelStateChange;
+        }else if(event.channel.label=="pcFileChannel"){// && !pcFileChannel
+          this.fileDataChannel = event.channel;
+          this.fileDataChannel.onmessage = this.onReceiveMessageFile;
+          this.fileDataChannel.onopen = this.onReceiveChannelStateChangeFile;
+          this.fileDataChannel.onclose = this.onReceiveChannelStateChangeFile;	
         }
       };      
       // if(this.localStream === null || this.localStream === undefined) {
@@ -353,7 +367,43 @@ export default {
         var readyState = this.pcDataChannel.readyState;
         console.log("onReceiveChannelStateChange",event,readyState);
       }
-    }  
+    },
+    onReceiveMessageFile(event) {
+      console.log("收到事件数据",event.data);	
+    },
+    onReceiveChannelStateChangeFile(event) {
+      if(this.pcDataChannel!=null){
+        var readyState = this.pcDataChannel.readyState;
+        console.log("onReceiveChannelStateChange",event,readyState);
+      }
+    },
+    handleFileChange(event){
+      // 获取选择的文件
+      const selectedFile = event.target.files[0];
+      // 处理文件，例如上传到服务器或进行其他操作
+      console.log('Selected File:', selectedFile);
+      if (!selectedFile) {
+        console.log('No file chosen');
+      } else {
+        // fileName = selectedFile.name;
+        // fileSize = selectedFile.size;
+        // fileType = selectedFile.type;
+        // lastModifyTime = file.lastModified;
+
+        this.sendMessage(this.roomId, {
+          type: 'fileinfo',
+          name: selectedFile.name,
+          size: selectedFile.size,
+          filetype: selectedFile.type,
+          lastmodify: selectedFile.lastModified
+        });
+        // btnSendFile.disabled = false;
+        // sendProgress.value = 0;
+      }
+    }, 
+    handleFileSend(){
+      console.log("handleFileSend");
+    },   
   }
 }
 </script>
